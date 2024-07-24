@@ -21,4 +21,24 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 #
-"""Tests."""
+"""Test Address Space."""
+
+from ucdp_addr import Addrspace, AddrspaceAlias
+
+
+def test_alias():
+    """Test Alias."""
+    addrspace = Addrspace(name="a", size="1KB")
+    word0 = addrspace.add_word("word0")
+
+    alias = AddrspaceAlias(addrspace=addrspace)
+    other_alias = AddrspaceAlias(addrspace=addrspace, name="foo")
+
+    word1 = addrspace.add_word("word1")
+
+    assert addrspace.name == "a"
+    assert alias.name == "a_alias"
+    assert other_alias.name == "foo"
+    assert tuple(addrspace.words) == (word0, word1)
+    assert tuple(alias.words) == (word0, word1)
+    assert tuple(other_alias.words) == (word0, word1)

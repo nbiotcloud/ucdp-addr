@@ -24,7 +24,7 @@
 
 [project]
 name = "ucdp-addr"
-version = "0.1.0"
+version = "1.0.0"
 description = "Unified Chip Design Platform - Address Map"
 readme = "README.md"
 authors = [
@@ -35,6 +35,7 @@ classifiers = [
 ]
 requires-python = ">=3.10.0,<4.0"
 dependencies = [
+    "ucdp>=0.8.0",
 ]
 
 [project.urls]
@@ -70,6 +71,9 @@ doc = [
 
 [tool.pdm.build]
 includes = ["src/ucdp_addr"]
+
+[project.entry-points."ucdp.cli"]
+lsaddrmap = "ucdp_addr.cli.lsaddrmap"
 
 [tool.ruff]
 line-length = 120
@@ -169,7 +173,7 @@ ignore = [
 convention = "google"
 
 [tool.pytest.ini_options]
-addopts ="""
+addopts = """
     --cov ucdp_addr
     --cov-report term
     --cov-report html

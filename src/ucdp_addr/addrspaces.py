@@ -21,4 +21,25 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 #
-"""Tests."""
+
+"""
+Address Spaces.
+"""
+
+from collections.abc import Iterable, Iterator
+from logging import getLogger
+
+from .addrspace import Addrspace
+
+LOGGER = getLogger(__name__)
+
+Addrspaces = Iterable[Addrspace]
+
+
+def join_addrspaces(base: Addrspace, addrspaces: Addrspaces) -> Iterator[Addrspace]:
+    """Join Address Spaces."""
+    for addrspace in addrspaces:
+        joined = base.join(addrspace)
+        LOGGER.debug("join_addrspaces: %s+%s=%s", base, addrspace, joined)
+        if joined:
+            yield joined

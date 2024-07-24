@@ -21,11 +21,23 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 #
-"""Basic Testing."""
 
-import ucdp_addr
+"""
+Address Space Alias.
+"""
+
+from .addrspace import Addrspace
 
 
-def test_examplefunc():
-    """Simple Testing."""
-    assert ucdp_addr.examplefunc(3, second=2) == 5
+class AddrspaceAlias(Addrspace):
+    """Address Space Alias."""
+
+    addrspace: Addrspace
+
+    def __init__(self, addrspace: Addrspace, name: str | None = None, **kwargs):
+        joinedkwargs = dict(addrspace)
+        joinedkwargs.update(kwargs)
+        if name is None:
+            name = f"{addrspace.name}_alias"
+        joinedkwargs["name"] = name
+        super().__init__(addrspace=addrspace, **joinedkwargs)
