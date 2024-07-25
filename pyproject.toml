@@ -40,7 +40,7 @@ dependencies = [
 
 [project.urls]
 "Homepage" = "https://github.com/nbiotcloud/ucdp-addr"
-"Documentation" = "https://ucdp-addr.readthedocs.io/en/latest/"
+"Documentation" = "https://ucdp-addr.readthedocs.io/en/stable/"
 "Bug Tracker" = "https://github.com/nbiotcloud/ucdp-addr/issues"
 
 [build-system]
