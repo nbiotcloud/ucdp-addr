@@ -30,18 +30,19 @@ from collections.abc import Callable
 
 import ucdp as u
 
-from .addrmap import AddrMap
+from .addrmap import AddrMap, Defines
 from .addrspaces import Addrspaces
-
-Defines = dict[str, str]
 
 GetAttrspacesFunc = Callable[[], Addrspaces]
 
 
-def get_addrmap(mod: u.BaseMod, defines: Defines | None = None) -> AddrMap:
+def get_addrmap(
+    mod: u.BaseMod, defines: Defines | None = None, unique: bool = False, ref: u.TopModRef | None = None
+) -> AddrMap:
     """Search Address Spaces and Create Address Map."""
-    addrmap = AddrMap()
-    for addrspace in get_addrspaces(mod):
+    defines = defines or {}
+    addrmap = AddrMap(unique=unique, defines=defines, ref=ref)
+    for addrspace in get_addrspaces(mod, defines=defines):
         addrmap.add(addrspace)
     return addrmap
 
