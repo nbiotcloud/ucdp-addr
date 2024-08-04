@@ -67,9 +67,12 @@ class BusMod(u.AMod):
         word = addrspace.add_word("word1", offset=0x3F0)
         word.add_field("field1", u.UintType(32), "RO")
 
-    def get_addrspaces(self, **kwargs) -> Addrspaces:
+    def get_addrspaces(self, master=None, **kwargs) -> Addrspaces:
         """Address Spaces."""
-        return self.addrmap
+        for addrspace in self.addrmap:
+            if master and addrspace.name == "two":
+                continue
+            yield addrspace
 
 
 class EmptyMod(u.AMod):

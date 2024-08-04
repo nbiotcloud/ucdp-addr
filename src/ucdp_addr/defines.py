@@ -22,39 +22,10 @@
 # SOFTWARE.
 #
 
-"""Command Line Interface."""
-
-import click
-from ucdp import cli
-
-from .addrmapfinder import get_addrmap
-
-opt_addrdefine = click.option(
-    "--addrdefine",
-    "-A",
-    multiple=True,
-    type=str,
-    help="Address Defines for Address Map. Environment Variable 'UCDP_ADDRDEFINES'",
-    envvar="UCDP_ADDRDEFINES",
-)
-
-
-@click.command(
-    help=f"""
-Load Data Model and List Address Map.
-
-TOP: Top Module. {cli.PAT_TOPMODREF}. Environment Variable 'UCDP_TOP'
 """
-)
-@cli.arg_top
-@cli.opt_path
-@click.option("--full", "-f", is_flag=True)
-@opt_addrdefine
-@cli.opt_file
-@cli.pass_ctx
-def lsaddrmap(ctx, top, path, full, addrdefine=None, file=None):
-    """Load Data Model and List Address Map."""
-    top = cli.load_top(ctx, top, path, quiet=True)
-    defines = cli.defines2data(addrdefine)
-    addrmap = get_addrmap(top.mod, defines=defines, ref=top.ref)
-    print(addrmap.get_overview(minimal=not full), end="", file=file)
+Defines.
+"""
+
+from typing import TypeAlias
+
+Defines: TypeAlias = dict[str, str | None]

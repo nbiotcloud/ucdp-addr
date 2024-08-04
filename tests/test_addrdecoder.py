@@ -37,11 +37,12 @@ class Mod(u.AMod):
     def _build(self) -> None:
         pass
 
-    def get_addrspaces(self) -> Addrspaces:
+    def get_addrspaces(self, master=None, **kwargs) -> Addrspaces:
         """Address Spaces."""
         addrspace = Addrspace(name=self.hiername, width=32, depth=64)
         addrspace.add_word("one")
-        addrspace.add_word("two", offset=7)
+        if not master:
+            addrspace.add_word("two", offset=7)
         yield addrspace
 
 

@@ -27,6 +27,7 @@ Address Map.
 """
 
 from collections.abc import Callable, Iterator
+from typing import TypeAlias
 
 import aligntext
 import ucdp as u
@@ -34,9 +35,10 @@ from icdutil import num
 
 from .addrspace import Addrspace, ReservedAddrspace
 from .addrspaces import Addrspaces
+from .defines import Defines
 
-FillAddrspaceFactory = Callable[[int, int, int], Addrspace]
-AddrspaceFilter = Callable[[Addrspace], bool]
+FillAddrspaceFactory: TypeAlias = Callable[[int, int, int], Addrspace]
+AddrspaceFilter: TypeAlias = Callable[[Addrspace], bool]
 
 
 class AddrMap(u.Object):
@@ -44,11 +46,19 @@ class AddrMap(u.Object):
 
     unique: bool = False
     fixed_size: u.Bytes | None = None
+    defines: Defines = u.Field(default_factory=dict)
+    ref: u.TopModRef | None = None
 
     @staticmethod
-    def from_addrspaces(addrspaces: Addrspaces, unique: bool = False, fixed_size: u.Bytes | None = None) -> "AddrMap":
+    def from_addrspaces(
+        addrspaces: Addrspaces,
+        unique: bool = False,
+        fixed_size: u.Bytes | None = None,
+        defines: Defines | None = None,
+        ref: u.TopModRef | None = None,
+    ) -> "AddrMap":
         """Create From address spaces."""
-        addrmap = AddrMap(unique=unique, fixed_size=fixed_size)
+        addrmap = AddrMap(unique=unique, fixed_size=fixed_size, defines=defines or {}, ref=ref)
         for addrspace in addrspaces:
             addrmap.add(addrspace)
         return addrmap
@@ -223,89 +233,104 @@ class AddrMap(u.Object):
         """
         Return overview table.
         """
-        parts = [f"Size: {self.size}", self._get_addrspaces_overview(fill=fill)]
+
+        def align(data) -> str:
+            lines = list(data)
+            lens = (max(len(cell) for cell in row) for row in zip(*lines, strict=False))
+            lines.insert(1, ("-" * len_ for len_ in lens))
+            return aligntext.align(lines, seps=(" | ",), sepfirst="| ", seplast=" |") + "\n"
+
+        defines = ", ".join(f"{define}={value!r}" for define, value in self.defines.items()) or None
+        header = [
+            f"Top:     {self.ref}",
+            f"Defines: {defines}",
+            f"Size:    {self.size}",
+        ]
+        parts = [
+            "\n".join(header),
+            align(self.get_addrspaces_overview(fill=fill)),
+        ]
         if not minimal:
-            parts.append(self._get_word_fields_overview())
+            parts.append(align(self.get_word_fields_overview()))
         return "\n\n".join(parts)
 
-    def _get_addrspaces_overview(self, fill) -> str:
-        data = [
-            ("Addrspace", "Type", "Base", "Size", "Attributes"),
-            ("---------", "----", "----", "----", "----------"),
-        ]
+    def get_addrspaces_overview(
+        self, fill: FillAddrspaceFactory | bool | None = None
+    ) -> Iterator[tuple[str, str, str, str, str]]:
+        """Get Address Spaces Overview Data."""
+        yield ("Addrspace", "Type", "Base", "Size", "Infos", "Attributes")
         for addrspace in self.iter(fill=fill):
             classname = addrspace.__class__.__name__.replace("Addrspace", "") or "-"
-            attrs = []
+            infos = []
             if addrspace.is_sub:
-                attrs.append("Sub")
+                infos.append("Sub")
             if addrspace.is_volatile:
-                attrs.append("Volatile")
-            data.append(
-                (
-                    addrspace.name,
-                    classname,
-                    addrspace.base,
-                    addrspace.org,
-                    ",".join(attrs),
-                )
+                infos.append("Volatile")
+            yield (
+                addrspace.name,
+                classname,
+                addrspace.base,
+                addrspace.org,
+                ",".join(infos),
+                ",".join(addrspace.attrs),
             )
-        return aligntext.align(data, seps=(" | ",), sepfirst="| ", seplast=" |") + "\n"
 
-    def _get_word_fields_overview(self) -> str:
-        data = [
-            ("Addrspace", "Word", "Field", "Offset", "Access", "Reset", "Attributes"),
-            ("---------", "----", "-----", "------", "------", "-----", "----------"),
-        ]
+    def get_word_fields_overview(  # noqa: C901
+        self, addrspaces: bool = True, words: bool = True, fields: bool = True
+    ) -> Iterator[tuple[str, str, str, str, str, str, str]]:
+        """Get Word-Fields Overview Data."""
+        yield ("Addrspace", "Word", "Field", "Offset", "Access", "Reset", "Infos", "Attributes")
         resolver = u.ExprResolver()
         for addrspace in self:
-            attrs = []
-            if addrspace.is_volatile:
-                attrs.append("Volatile")
-            data.append(
-                (
+            # address spaces
+            if addrspaces:
+                infos = []
+                if addrspace.is_volatile:
+                    infos.append("Volatile")
+                yield (
                     addrspace.name,
                     "",
                     "",
                     addrspace.base,
                     addrspace.access,
                     "",
-                    ",".join(attrs),
+                    ",".join(infos),
+                    ",".join(addrspace.attrs),
                 )
-            )
+            # words
             for word in addrspace.words:
-                attrs = []
-                if word.is_volatile:
-                    attrs.append("Volatile")
-                data.append(
-                    (
+                if words:
+                    infos = []
+                    if word.is_volatile:
+                        infos.append("Volatile")
+                    yield (
                         addrspace.name,
                         word.name,
                         "",
                         f"  +{word.slice}",
                         word.access,
                         "",
-                        ",".join(attrs),
+                        ",".join(infos),
+                        ",".join(word.attrs),
                     )
-                )
-                for field in word.fields:
-                    attrs = []
-                    if field.is_volatile:
-                        attrs.append("Volatile")
-                    if field.is_const:
-                        attrs.append("CONST")
-                    data.append(
-                        (
+                # fields
+                if fields:
+                    for field in word.fields:
+                        infos = []
+                        if field.is_volatile:
+                            infos.append("Volatile")
+                        if field.is_const:
+                            infos.append("CONST")
+                        yield (
                             addrspace.name,
                             word.name,
                             field.name,
-                            f"    {field.slice}",
+                            f"    [{field.slice}]",
                             str(field.access),
                             resolver.resolve_value(field.type_),
-                            ",".join(attrs),
+                            ",".join(infos),
+                            ",".join(field.attrs),
                         )
-                    )
-
-        return aligntext.align(data, seps=(" | ",), sepfirst="| ", seplast=" |") + "\n"
 
     def _check_size(self, addrspace: Addrspace) -> None:
         fixed_size = self.fixed_size

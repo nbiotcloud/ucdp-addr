@@ -1,5 +1,5 @@
-Top:     None
-Defines: None
+Top:     top_lib.top
+Defines: one='two'
 Size:    268 KB
 
 | Addrspace | Type | Base    | Size           | Infos | Attributes |
