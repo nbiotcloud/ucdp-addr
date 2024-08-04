@@ -23,9 +23,10 @@
 #
 """Test Command-Line-Interface."""
 
+import ucdp as u
 from click.testing import CliRunner
 from pytest import fixture
-from ucdp.cli import ucdp
+from test2ref import assert_refdata
 
 
 @fixture
@@ -34,54 +35,38 @@ def runner():
     yield CliRunner()
 
 
-def _assert_output(result, lines):
-    assert [line.rstrip() for line in result.output.splitlines()] == lines
+def _run(runner, path, cmd):
+    result = runner.invoke(u.cli.ucdp, cmd)
+    assert result.exit_code == 0
+    (path / "console.txt").write_text(result.output)
 
 
-def test_lsaddrmap(runner, testdata_path):
+def test_lsaddrmap(runner, tmp_path, testdata_path):
     """Lsaddrmap Command."""
-    result = runner.invoke(ucdp, ["lsaddrmap", "top_lib.top"])
-    assert result.exit_code == 0
-    lines = [
-        "Size: 268 KB",
-        "",
-        "| Addrspace | Type | Base    | Size           | Attributes |",
-        "| --------- | ---- | ------- | -------------- | ---------- |",
-        "| one       | -    | 0x11000 | 512x32 (2 KB)  |            |",
-        "| two       | -    | 0x12000 | 1024x32 (4 KB) |            |",
-        "| one       | -    | 0x41000 | 512x32 (2 KB)  |            |",
-        "| two       | -    | 0x42000 | 1024x32 (4 KB) |            |",
-        "",
-    ]
-    _assert_output(result, lines)
+    _run(runner, tmp_path, ["lsaddrmap", "top_lib.top"])
+    assert_refdata(test_lsaddrmap, tmp_path)
 
-    result = runner.invoke(ucdp, ["lsaddrmap", "top_lib.top", "--full"])
-    assert result.exit_code == 0
-    lines = [
-        "Size: 268 KB",
-        "",
-        "| Addrspace | Type | Base    | Size           | Attributes |",
-        "| --------- | ---- | ------- | -------------- | ---------- |",
-        "| one       | -    | 0x11000 | 512x32 (2 KB)  |            |",
-        "| two       | -    | 0x12000 | 1024x32 (4 KB) |            |",
-        "| one       | -    | 0x41000 | 512x32 (2 KB)  |            |",
-        "| two       | -    | 0x42000 | 1024x32 (4 KB) |            |",
-        "",
-        "",
-        "| Addrspace | Word  | Field  | Offset     | Access | Reset | Attributes |",
-        "| --------- | ----- | ------ | ---------- | ------ | ----- | ---------- |",
-        "| one       |       |        | 0x11000    |        |       |            |",
-        "| one       | word0 |        |   +4       |        |       |            |",
-        "| one       | word0 | field0 |     [3:0]  | RW/-   | 0x0   |            |",
-        "| two       |       |        | 0x12000    |        |       |            |",
-        "| two       | word1 |        |   +1008    |        |       |            |",
-        "| two       | word1 | field1 |     [31:0] | RO/-   | 0x0   | CONST      |",
-        "| one       |       |        | 0x41000    |        |       |            |",
-        "| one       | word0 |        |   +4       |        |       |            |",
-        "| one       | word0 | field0 |     [3:0]  | RW/-   | 0x0   |            |",
-        "| two       |       |        | 0x42000    |        |       |            |",
-        "| two       | word1 |        |   +1008    |        |       |            |",
-        "| two       | word1 | field1 |     [31:0] | RO/-   | 0x0   | CONST      |",
-        "",
-    ]
-    _assert_output(result, lines)
+
+def test_lsaddrmap_full(runner, tmp_path, testdata_path):
+    """Lsaddrmap Command Full with File."""
+    _run(runner, tmp_path, ["lsaddrmap", "top_lib.top", "--full"])
+    assert_refdata(test_lsaddrmap_full, tmp_path)
+
+
+def test_lsaddrmap_full_file(runner, tmp_path, testdata_path):
+    """Lsaddrmap Command."""
+    filepath = tmp_path / "file.txt"
+    _run(runner, tmp_path, ["lsaddrmap", "top_lib.top", "--full", "--file", str(filepath)])
+    assert_refdata(test_lsaddrmap_full_file, tmp_path)
+
+
+def test_lsaddrmap_full_define_one(runner, tmp_path, testdata_path):
+    """Lsaddrmap Command."""
+    _run(runner, tmp_path, ["lsaddrmap", "top_lib.top", "--full", "-A", "one=two"])
+    assert_refdata(test_lsaddrmap_full_define_one, tmp_path)
+
+
+def test_lsaddrmap_full_define_master(runner, tmp_path, testdata_path):
+    """Lsaddrmap Command."""
+    _run(runner, tmp_path, ["lsaddrmap", "top_lib.top", "--full", "-A", "master=apps"])
+    assert_refdata(test_lsaddrmap_full_define_master, tmp_path)

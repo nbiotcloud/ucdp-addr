@@ -28,11 +28,13 @@ Address Space.
 
 from collections import defaultdict
 from collections.abc import Callable, Iterator
-from typing import Literal, Optional
+from typing import Literal, Optional, TypeAlias
 
 import ucdp as u
 from humannum import bytes_
 from icdutil import num
+
+Attrs: TypeAlias = set[str]
 
 
 class ReadOp(u.NamedLightObject):
@@ -232,6 +234,8 @@ class Field(u.NamedLightObject):
     """Volatile."""
     doc: u.Doc = u.Doc()
     """Documentation."""
+    attrs: Attrs = u.Field(default_factory=set)
+    """Attributes."""
 
     @property
     def slice(self) -> u.Slice:
@@ -267,6 +271,8 @@ class Word(u.NamedObject):
     """Number of words."""
     doc: u.Doc = u.Doc()
     """Documentation"""
+    attrs: Attrs = u.Field(default_factory=set)
+    """Attributes."""
 
     bus: Access | None = None
     core: Access | None = None
@@ -411,6 +417,8 @@ class Addrspace(u.NamedObject):
     """Address Decoder Just Compares `addrwidth` LSBs."""
     words: u.Namespace = u.Field(default_factory=u.Namespace, repr=False)
     """Words within Address Space."""
+    attrs: Attrs = u.Field(default_factory=set)
+    """Attributes."""
 
     bus: Access | None = None
     core: Access | None = None
