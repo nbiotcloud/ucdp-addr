@@ -31,7 +31,7 @@ from collections.abc import Callable, Iterator
 from typing import Literal, Optional, TypeAlias
 
 import ucdp as u
-from humannum import bytes_
+from humannum import bytesize_
 from icdutil import num
 
 Attrs: TypeAlias = set[str]
@@ -393,9 +393,10 @@ def calc_depth_size(width: int, depth: int | None, size: u.Bytes | None) -> tupl
     if size is None:
         if depth is None:
             raise ValueError("Either 'depth' or 'size' are required.")
-        size = bytes_((width * depth) // 8)
+        size = bytesize_((width * depth) // 8)
     else:
-        depth_calculated = int(bytes_(size) * 8 // width)
+        size = bytesize_(size)
+        depth_calculated = int(size * 8 // width)
         if depth is not None and depth != depth_calculated:
             raise ValueError("'depth' and 'size' are mutally exclusive.")
         depth = depth_calculated
@@ -463,7 +464,7 @@ class Addrspace(u.NamedObject):
     @property
     def size_used(self) -> u.Bytes:
         """Number of Bytes Used."""
-        return bytes_(int(sum(word.wordsize for word in self.words)))
+        return bytesize_(int(sum(word.wordsize for word in self.words)))
 
     @property
     def free_offset(self) -> int:
