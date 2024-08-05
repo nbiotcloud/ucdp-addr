@@ -45,6 +45,7 @@ from .addrspace import (
 from .addrspacealias import AddrspaceAlias
 from .addrspaces import Addrspaces, join_addrspaces
 from .const import NOREF
+from .util import calc_depth_size
 
 __all__ = [
     "Access",
@@ -52,13 +53,13 @@ __all__ = [
     "AddrDecoder",
     "AddrMap",
     "AddrMaster",
-    "ReservedAddrspace",
     "AddrMatrix",
     "AddrRef",
     "AddrSlave",
     "Addrspace",
     "AddrspaceAlias",
     "Addrspaces",
+    "calc_depth_size",
     "create_fill_addrspace",
     "create_fill_field",
     "create_fill_word",
@@ -70,6 +71,7 @@ __all__ = [
     "join_addrspaces",
     "NOREF",
     "ReadOp",
+    "ReservedAddrspace",
     "Word",
     "WriteOp",
 ]

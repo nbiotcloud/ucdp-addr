@@ -34,6 +34,8 @@ import ucdp as u
 from humannum import bytesize_
 from icdutil import num
 
+from .util import calc_depth_size
+
 Attrs: TypeAlias = set[str]
 
 
@@ -385,22 +387,6 @@ WordFields = tuple[Word, tuple[Field, ...]]
 
 FillWordFactory = Callable[["Addrspace", int, int, int], Word]
 FillFieldFactory = Callable[[Word, int, int, int], Field]
-
-
-def calc_depth_size(width: int, depth: int | None, size: u.Bytes | None) -> tuple[int, u.Bytes]:
-    """Calc either depth or size."""
-    # Provide either 'size' or 'depth' and calculate the other
-    if size is None:
-        if depth is None:
-            raise ValueError("Either 'depth' or 'size' are required.")
-        size = bytesize_((width * depth) // 8)
-    else:
-        size = bytesize_(size)
-        depth_calculated = int(size * 8 // width)
-        if depth is not None and depth != depth_calculated:
-            raise ValueError("'depth' and 'size' are mutally exclusive.")
-        depth = depth_calculated
-    return depth, size
 
 
 class Addrspace(u.NamedObject):
