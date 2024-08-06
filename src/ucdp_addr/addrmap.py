@@ -32,6 +32,7 @@ from typing import TypeAlias
 import aligntext
 import ucdp as u
 from icdutil import num
+from ucdp_glbl.attrs import format_attrs
 
 from .addrspace import Addrspace, ReservedAddrspace
 from .addrspaces import Addrspaces
@@ -272,7 +273,7 @@ class AddrMap(u.Object):
                 addrspace.base,
                 addrspace.org,
                 ",".join(infos),
-                ",".join(addrspace.attrs),
+                format_attrs(addrspace.attrs),
             )
 
     def get_word_fields_overview(  # noqa: C901
@@ -295,7 +296,7 @@ class AddrMap(u.Object):
                     addrspace.access,
                     "",
                     ",".join(infos),
-                    ",".join(addrspace.attrs),
+                    format_attrs(addrspace.attrs),
                 )
             # words
             for word in addrspace.words:
@@ -311,7 +312,7 @@ class AddrMap(u.Object):
                         word.access,
                         "",
                         ",".join(infos),
-                        ",".join(word.attrs),
+                        format_attrs(word.attrs),
                     )
                 # fields
                 if fields:
@@ -329,7 +330,7 @@ class AddrMap(u.Object):
                             str(field.access),
                             resolver.resolve_value(field.type_),
                             ",".join(infos),
-                            ",".join(field.attrs),
+                            format_attrs(field.attrs),
                         )
 
     def _check_size(self, addrspace: Addrspace) -> None:

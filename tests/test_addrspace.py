@@ -28,6 +28,7 @@ import re
 import ucdp as u
 from pytest import fixture, raises
 from test2ref import assert_refdata
+from ucdp_addr import zip_addrspaces
 from ucdp_addr.addrspace import (
     ACCESSES,
     RO,
@@ -484,3 +485,28 @@ def test_addrspace_iter_fill_defaults(sparse_addrspace, tmp_path):
         tmp_path,
     )
     assert_refdata(test_addrspace_iter_fill_defaults, tmp_path)
+
+
+def test_zip():
+    """Zip."""
+    a0 = Addrspace(name="a0", baseaddr=0x0000, size=0x1000)
+    a1 = Addrspace(name="a1", baseaddr=0x1000, size=0x1000)
+    b0 = Addrspace(name="b0", baseaddr=0x0000, size=0x1000)
+    b1 = Addrspace(name="b1", baseaddr=0x1000, size=0x800)
+    b2 = Addrspace(name="b2", baseaddr=0x1800, size=0x800)
+
+    assert tuple(zip_addrspaces((), (b0,))) == ()
+    assert tuple(zip_addrspaces((a0, a1), (b0, b1))) == ((a0, b0), (a1, b1))
+    assert tuple(zip_addrspaces((a0,), (b0,))) == ((a0, b0),)
+    assert tuple(zip_addrspaces((a0, a1), (b0, b1, b2))) == ((a0, b0), (a1, b1), (a1, b2))
+
+
+def test_ident():
+    """Ident."""
+    addrspace = Addrspace(name="name", width=32, depth=32)
+    with raises(u.ValidationError):
+        addrspace.add_word("foo ")
+
+    word = addrspace.add_word("foo")
+    with raises(u.ValidationError):
+        word.add_field("foo ", type_=u.UintType(2))

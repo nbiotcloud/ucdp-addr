@@ -28,18 +28,17 @@ Address Space.
 
 from collections import defaultdict
 from collections.abc import Callable, Iterator
-from typing import Literal, Optional, TypeAlias
+from typing import Literal, Optional
 
 import ucdp as u
 from humannum import bytesize_
 from icdutil import num
+from ucdp_glbl.attrs import CastableAttrs
 
 from .util import calc_depth_size
 
-Attrs: TypeAlias = set[str]
 
-
-class ReadOp(u.NamedLightObject):
+class ReadOp(u.IdentLightObject):
     """
     Read Operation.
 
@@ -63,7 +62,7 @@ _RT = ReadOp(name="RT", data="~", title="Read-Toggle", descr="Toggle on Read.")
 _RP = ReadOp(name="RP", once=True, title="Read-Protected", descr="Data is hidden after first Read.")
 
 
-class WriteOp(u.NamedLightObject):
+class WriteOp(u.IdentLightObject):
     """
     Write Operation.
 
@@ -92,7 +91,7 @@ _W1S = WriteOp(name="W1S", data="", op="|", write="", title="Write-One-Set", des
 _WL = WriteOp(name="WL", write="", once=True, title="Write Locked", descr="Write Data once and Lock.")
 
 
-class Access(u.NamedLightObject):
+class Access(u.IdentLightObject):
     """Access."""
 
     read: ReadOp | None = None
@@ -221,7 +220,7 @@ def get_counteraccess(access: Access) -> Access | None:
     return _COUNTERACCESS.get(access, None)
 
 
-class Field(u.NamedLightObject):
+class Field(u.IdentLightObject):
     """Field."""
 
     type_: u.BaseScalarType
@@ -236,7 +235,7 @@ class Field(u.NamedLightObject):
     """Volatile."""
     doc: u.Doc = u.Doc()
     """Documentation."""
-    attrs: Attrs = u.Field(default_factory=set)
+    attrs: CastableAttrs = ()
     """Attributes."""
 
     @property
@@ -260,7 +259,7 @@ class Field(u.NamedLightObject):
 FieldFilter = Callable[[Field], bool]
 
 
-class Word(u.NamedObject):
+class Word(u.IdentObject):
     """Word."""
 
     fields: u.Namespace = u.Field(default_factory=u.Namespace, init=False, repr=False)
@@ -273,7 +272,7 @@ class Word(u.NamedObject):
     """Number of words."""
     doc: u.Doc = u.Doc()
     """Documentation"""
-    attrs: Attrs = u.Field(default_factory=set)
+    attrs: CastableAttrs = ()
     """Attributes."""
 
     bus: Access | None = None
@@ -389,7 +388,7 @@ FillWordFactory = Callable[["Addrspace", int, int, int], Word]
 FillFieldFactory = Callable[[Word, int, int, int], Field]
 
 
-class Addrspace(u.NamedObject):
+class Addrspace(u.IdentObject):
     """Address Space."""
 
     baseaddr: u.Hex = 0
@@ -404,7 +403,7 @@ class Addrspace(u.NamedObject):
     """Address Decoder Just Compares `addrwidth` LSBs."""
     words: u.Namespace = u.Field(default_factory=u.Namespace, repr=False)
     """Words within Address Space."""
-    attrs: Attrs = u.Field(default_factory=set)
+    attrs: CastableAttrs = ()
     """Attributes."""
 
     bus: Access | None = None
@@ -463,6 +462,12 @@ class Addrspace(u.NamedObject):
     def org(self) -> str:
         """Organization."""
         return f"{self.depth}x{self.width} ({self.size})"
+
+    @property
+    def info(self) -> str:
+        """Info."""
+        baseaddr = f"+{self.baseaddr}" if self.is_sub else f"{self.baseaddr}"
+        return f"{self.name} {baseaddr} {self.depth}x{self.width}"
 
     @property
     def base(self) -> str:
