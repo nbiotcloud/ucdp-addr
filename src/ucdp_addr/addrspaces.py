@@ -43,3 +43,44 @@ def join_addrspaces(base: Addrspace, addrspaces: Addrspaces) -> Iterator[Addrspa
         LOGGER.debug("join_addrspaces: %s+%s=%s", base, addrspace, joined)
         if joined:
             yield joined
+
+
+def zip_addrspaces(lefts, rights) -> Iterator[tuple[Addrspace, ...]]:
+    """
+    Zip Address Spaces.
+
+    >>> one = (
+    ...     Addrspace(name='a0', baseaddr=0x0000, size=0x1000),
+    ...     Addrspace(name='a1', baseaddr=0x1000, size=0x1000))
+    >>> other = (
+    ...     Addrspace(name='b0', baseaddr=0x0000, size=0x1000),
+    ...     Addrspace(name='b1', baseaddr=0x1000, size=0x800),
+    ...     Addrspace(name='b2', baseaddr=0x1800, size=0x800))
+    >>> for left, right in zip_addrspaces(one, other): print(repr(left.info), repr(right.info))
+    'a0 +0x0 1024x32' 'b0 +0x0 1024x32'
+    'a1 +0x1000 1024x32' 'b1 +0x1000 512x32'
+    'a1 +0x1000 1024x32' 'b2 +0x1800 512x32'
+    """
+    leftiter = iter(lefts)
+    rightiter = iter(rights)
+    try:
+        left = next(leftiter)
+        right = next(rightiter)
+    except StopIteration:
+        pass
+    else:
+        while True:
+            yield left, right
+            leftend = left.endaddr <= right.endaddr
+            rightend = right.endaddr <= left.endaddr
+            if leftend:
+                try:
+                    left = next(leftiter)
+                except StopIteration:
+                    break
+            if rightend:
+                try:
+                    right = next(rightiter)
+                except StopIteration:
+                    break
+            assert leftend or rightend

@@ -40,10 +40,10 @@ def zero():
 @fixture
 def one():
     """One."""
-    addrspace = Addrspace(name="one", baseaddr=0x1000, size=0x1000, is_volatile=True)
+    addrspace = Addrspace(name="one", baseaddr=0x1000, size=0x1000, is_volatile=True, attrs="a=1;b")
     word = addrspace.add_word("word0")
-    word.add_field("field", u.UintType(3), "RW")
-    word = addrspace.add_word("word1", depth=4)
+    word.add_field("field", u.UintType(3), "RW", attrs="foo")
+    word = addrspace.add_word("word1", depth=4, attrs="bar=4")
     word.add_field("field", u.UintType(3), "RW")
     return addrspace
 

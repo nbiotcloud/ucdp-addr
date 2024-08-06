@@ -43,7 +43,7 @@ from .addrspace import (
     create_fill_word,
 )
 from .addrspacealias import AddrspaceAlias
-from .addrspaces import Addrspaces, join_addrspaces
+from .addrspaces import Addrspaces, join_addrspaces, zip_addrspaces
 from .const import NOREF
 from .util import calc_depth_size
 
@@ -74,4 +74,5 @@ __all__ = [
     "ReservedAddrspace",
     "Word",
     "WriteOp",
+    "zip_addrspaces",
 ]

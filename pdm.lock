@@ -5,7 +5,7 @@
 groups = ["default", "checktypes", "doc", "format", "test"]
 strategy = ["inherit_metadata"]
 lock_version = "4.5.0"
-content_hash = "sha256:ce0b325cd6160a2b84d0d1d10b8e81358a2b08d2ac951a0c566ce3281218cc68"
+content_hash = "sha256:e2d89202da3b217aaaf1cb3ac92f40ebfc19410d28a230f9e7ee461325e2db6a"
 
 [[metadata.targets]]
 requires_python = ">=3.10.0,<4.0"
@@ -1137,7 +1137,7 @@ name = "pyreadline3"
 version = "3.4.1"
 summary = "A python implementation of GNU readline."
 groups = ["default"]
-marker = "sys_platform == \"win32\" and python_version >= \"3.8\""
+marker = "sys_platform == \"win32\""
 files = [
     {file = "pyreadline3-3.4.1-py3-none-any.whl", hash = "sha256:b0efb6516fd4fb07b45949053826a62fa4cb353db5be2bbb4a7aa1fdd1e345fb"},
     {file = "pyreadline3-3.4.1.tar.gz", hash = "sha256:6f3d1f7b8a31ba32b73917cefc1f28cc660562f39aea8646d30bd6eff21f7bae"},
@@ -1474,7 +1474,7 @@ files = [
 
 [[package]]
 name = "ucdp"
-version = "0.13.0"
+version = "0.16.0"
 requires_python = "<4.0,>=3.10.0"
 summary = "Unified Chip Design Platform"
 groups = ["default"]
@@ -1493,8 +1493,22 @@ dependencies = [
     "uniquer>=1.0.2",
 ]
 files = [
-    {file = "ucdp-0.13.0-py3-none-any.whl", hash = "sha256:0c95c53a6e1d5b0d77d40a9fe2467c763072cc51c63f415c0b045b0a63a8f350"},
-    {file = "ucdp-0.13.0.tar.gz", hash = "sha256:31dd637067ad0c8d101811536eda6ddb1f936f2aabfd60190da33235e5e5576c"},
+    {file = "ucdp-0.16.0-py3-none-any.whl", hash = "sha256:ec7409e0e70cca17a4b8a8eda85a292c02f2d50cd91b39ffc34fc17e9913bb8d"},
+    {file = "ucdp-0.16.0.tar.gz", hash = "sha256:d1ad0e4bebb2d4b5c6ee061c01a1d93b00fb917c99706d0e3f943e7271473b7d"},
+]
+
+[[package]]
+name = "ucdp-glbl"
+version = "1.1.1"
+requires_python = "<4.0,>=3.10.0"
+summary = "Unified Chip Design Platform - Global"
+groups = ["default"]
+dependencies = [
+    "ucdp>=0.15.1",
+]
+files = [
+    {file = "ucdp_glbl-1.1.1-py3-none-any.whl", hash = "sha256:c57fd838632f4a18207de98cbd776cdbfebad6bd45ba45b059606841b67bbe51"},
+    {file = "ucdp_glbl-1.1.1.tar.gz", hash = "sha256:f735cd714258a9ea44bcefd4e3bab87dbc370a6d8c5b5241914299696de8f0ab"},
 ]
 
 [[package]]
