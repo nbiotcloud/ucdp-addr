@@ -29,7 +29,7 @@ Generic Master.
 import ucdp as u
 
 
-class AddrMaster(u.NamedObject):
+class AddrMaster(u.IdentObject):
     """
     Master.
     """

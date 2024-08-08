@@ -28,7 +28,7 @@ import re
 import ucdp as u
 from pytest import fixture, raises
 from test2ref import assert_refdata
-from ucdp_addr import zip_addrspaces
+from ucdp_addr import DefaultAddrspace, zip_addrspaces
 from ucdp_addr.addrspace import (
     ACCESSES,
     RO,
@@ -41,6 +41,7 @@ from ucdp_addr.addrspace import (
     get_is_const,
     get_is_volatile,
 )
+from ucdp_glbl.attrs import Attr
 
 
 @fixture
@@ -510,3 +511,11 @@ def test_ident():
     word = addrspace.add_word("foo")
     with raises(u.ValidationError):
         word.add_field("foo ", type_=u.UintType(2))
+
+
+def test_default_addrspace():
+    """Default Address Space."""
+    default = DefaultAddrspace(size="4kb", attrs="one")
+    assert default.name == ""
+    assert default.size == 4096
+    assert default.attrs == (Attr("one"),)

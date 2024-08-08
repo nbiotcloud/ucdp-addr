@@ -732,3 +732,9 @@ def create_fill_field(word, idx, offset, width) -> Field:
 
 class ReservedAddrspace(Addrspace):
     """A Reserved Address Space."""
+
+
+class DefaultAddrspace(Addrspace):
+    """Default Address Space."""
+
+    name: str = u.Field(init=False, default="")
