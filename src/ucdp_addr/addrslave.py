@@ -34,7 +34,7 @@ from .addrref import AddrRef
 from .addrspace import Addrspace
 
 
-class AddrSlave(u.NamedObject):
+class AddrSlave(u.IdentObject):
     """
     Slave.
     """
