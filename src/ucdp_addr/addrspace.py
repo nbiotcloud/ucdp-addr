@@ -28,14 +28,19 @@ Address Space.
 
 from collections import defaultdict
 from collections.abc import Callable, Iterator
-from typing import Literal, Optional
+from typing import Any, Literal, Optional
 
+import pydantic as pyd
 import ucdp as u
 from humannum import bytesize_
 from icdutil import num
 from ucdp_glbl.attrs import CastableAttrs
 
 from .util import calc_depth_size
+
+
+class FullError(ValueError):
+    """Full."""
 
 
 class ReadOp(u.IdentLightObject):
@@ -326,7 +331,7 @@ class Word(u.IdentObject):
             **kwargs,
         )
         if field.slice.left >= self.width:
-            raise ValueError(f"Field {field.name!r} exceeds word width of {self.width}")
+            raise FullError(f"Field {field.name!r} exceeds word width of {self.width}")
         self.fields.add(field)
         return field
 
@@ -389,6 +394,41 @@ WordFields = tuple[Word, tuple[Field, ...]]
 
 FillWordFactory = Callable[["Addrspace", int, int, int], Word]
 FillFieldFactory = Callable[[Word, int, int, int], Field]
+
+
+class _WordsHelper(u.Object):
+    model_config = pyd.ConfigDict(
+        frozen=False,
+    )
+
+    name: str
+    addrspace: "Addrspace"
+    word_kwargs: dict[str, Any]
+
+    idx: int
+    word: Word
+
+    @classmethod
+    def create(cls, name: str, addrspace: "Addrspace", word_kwargs: dict[str, Any], **kwargs) -> "_WordsHelper":
+        idx, word = cls._create_word(name, addrspace, word_kwargs, **kwargs)
+        return _WordsHelper(name=name, addrspace=addrspace, word_kwargs=word_kwargs, idx=idx, word=word)
+
+    @staticmethod
+    def _create_word(
+        name: str, addrspace: "Addrspace", word_kwargs: dict[str, Any], idx: int = 0, **kwargs
+    ) -> tuple[int, Word]:
+        word = addrspace.add_word(f"{name}{idx}", **word_kwargs, **kwargs)
+        return idx + 1, word
+
+    def next(self):
+        self.idx, self.word = self._create_word(self.name, self.addrspace, self.word_kwargs, idx=self.idx)
+
+    def add_field(self, *args, **kwargs):
+        try:
+            self.word.add_field(*args, **kwargs)
+        except FullError:
+            self.next()
+            self.word.add_field(*args, **kwargs)
 
 
 class Addrspace(u.IdentObject):
@@ -526,9 +566,26 @@ class Addrspace(u.IdentObject):
             **kwargs,
         )
         if word.slice.left >= self.depth:
-            raise ValueError(f"Word {word.name!r} exceeds address space depth of {self.depth}")
+            raise FullError(f"Word {word.name!r} exceeds address space depth of {self.depth}")
         self.words.add(word)
         return word
+
+    def add_words(
+        self,
+        name: str,
+        offset: int | u.Expr | None = None,
+        align: int | u.Expr | None = None,
+        byteoffset: int | u.Expr | None = None,
+        bytealign: int | u.Expr | None = None,
+        depth: int | u.Expr | None = None,
+        **kwargs,
+    ) -> _WordsHelper:
+        """Add Word."""
+        if depth is not None:
+            raise ValueError("'depth' is not supported on add_words()")
+        return _WordsHelper.create(
+            name, self, kwargs, offset=offset, align=align, byteoffset=byteoffset, bytealign=bytealign
+        )
 
     def _create_word(self, **kwargs) -> Word:
         return Word(**kwargs)
@@ -629,7 +686,7 @@ class Addrspace(u.IdentObject):
                 offset = word.offset + (word.depth or 1)
 
         if fill_word and fill_word_end:
-            yield create_word(counter, offset, self.depth)
+            yield create_word(counter, offset, self.depth - offset)
 
     def is_overlapping(self, other: "Addrspace") -> bool:
         """
