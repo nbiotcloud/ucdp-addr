@@ -554,8 +554,8 @@ class Addrspace(u.IdentObject):
         fill: bool | None = None,
         fill_word: FillWordFactory | bool | None = None,
         fill_field: FillFieldFactory | bool | None = None,
-        fill_word_end: bool = False,
-        fill_field_end: bool = False,
+        fill_word_end: bool | None = None,
+        fill_field_end: bool | None = None,
     ) -> Iterator[WordFields]:
         """Iterate over words and their fields."""
         if fill is not None:
@@ -626,6 +626,7 @@ class Addrspace(u.IdentObject):
 
             if fields:
                 yield word, fields
+                offset = word.offset + (word.depth or 1)
 
         if fill_word and fill_word_end:
             yield create_word(counter, offset, self.depth)
