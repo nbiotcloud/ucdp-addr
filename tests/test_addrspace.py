@@ -59,9 +59,11 @@ def addrspace():
 def test_accesses(tmp_path, capsys):
     """Test Accesses."""
     for access in ACCESSES:
-        print(str(access), repr(access))
-        print(f"    title={access.title!r}")
-        print(f"    descr={access.descr!r}")
+        print(f"{access!s}")
+        print(f"    {access.read=!r}")
+        print(f"    {access.write=!r}")
+        print(f"    {access.title=!r}")
+        print(f"    {access.descr=!r}")
     assert_refdata(test_accesses, tmp_path, capsys=capsys)
 
 
@@ -519,3 +521,23 @@ def test_default_addrspace():
     assert default.name == ""
     assert default.size == 4096
     assert default.attrs == (Attr("one"),)
+
+
+def test_add_words(tmp_path):
+    """Iterate with field filling."""
+    addrspace = Addrspace(name="module", width=32, depth=128)
+
+    word = addrspace.add_words("a")
+    word.add_field("a", u.UintType(14), "RW")
+    word.add_field("b", u.UintType(14), "RW")
+    word.add_field("c", u.UintType(14), "RW")
+    word.add_field("d", u.UintType(14), "RW")
+
+    word = addrspace.add_words("b", align=16)
+    word.add_field("a", u.UintType(14), "RW")
+    word.add_field("b", u.UintType(18), "RW")
+    word.add_field("c", u.UintType(10), "RW")
+    word.add_field("d", u.UintType(23), "RW")
+
+    _dump_addrspace(addrspace.iter(fill=True), tmp_path)
+    assert_refdata(test_add_words, tmp_path)
