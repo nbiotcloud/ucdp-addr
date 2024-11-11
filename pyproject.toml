@@ -24,7 +24,7 @@
 
 [project]
 name = "ucdp-addr"
-version = "1.4.0"
+dynamic = ["version"]
 description = "Unified Chip Design Platform - Address Map"
 readme = "README.md"
 authors = [
@@ -72,6 +72,10 @@ doc = [
 
 [tool.pdm.build]
 includes = ["src/ucdp_addr"]
+
+[tool.pdm.version]
+source = "scm"
+fallback_version = "0.0.0"
 
 [project.entry-points."ucdp.cli"]
 lsaddrmap = "ucdp_addr.cli.lsaddrmap"
