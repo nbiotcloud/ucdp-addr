@@ -118,6 +118,9 @@ class Access(u.IdentLightObject):
     def __str__(self):
         return self.name
 
+    def __repr__(self):
+        return self.name
+
 
 RO = Access(name="RO", read=_R)
 RC = Access(name="RC", read=_RC)
@@ -196,9 +199,9 @@ def cast_access(value: str | Access) -> Access:
         >>> from ucdp_addr import addrspace
         >>> access = addrspace.cast_access("RO")
         >>> access
-        Access(name='RO', read=ReadOp(name='R'))
+        RO
         >>> cast_access(access)
-        Access(name='RO', read=ReadOp(name='R'))
+        RO
     """
     if isinstance(value, Access):
         return value
@@ -548,12 +551,18 @@ class Addrspace(u.IdentObject):
         self,
         wordfilter: WordFilter | None = None,
         fieldfilter: FieldFilter | None = None,
+        fill: bool | None = None,
         fill_word: FillWordFactory | bool | None = None,
         fill_field: FillFieldFactory | bool | None = None,
         fill_word_end: bool = False,
         fill_field_end: bool = False,
     ) -> Iterator[WordFields]:
         """Iterate over words and their fields."""
+        if fill is not None:
+            fill_word = fill if fill_word is None else fill_word
+            fill_field = fill if fill_field is None else fill_field
+            fill_word_end = fill if fill_word_end is None else fill_word_end
+            fill_field_end = fill if fill_field_end is None else fill_field_end
 
         def no_wordfilter(_: Word) -> bool:
             return True

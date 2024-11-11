@@ -59,9 +59,11 @@ def addrspace():
 def test_accesses(tmp_path, capsys):
     """Test Accesses."""
     for access in ACCESSES:
-        print(str(access), repr(access))
-        print(f"    title={access.title!r}")
-        print(f"    descr={access.descr!r}")
+        print(f"{access!s}")
+        print(f"    {access.read=!r}")
+        print(f"    {access.write=!r}")
+        print(f"    {access.title=!r}")
+        print(f"    {access.descr=!r}")
     assert_refdata(test_accesses, tmp_path, capsys=capsys)
 
 
