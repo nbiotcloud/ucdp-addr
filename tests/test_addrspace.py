@@ -36,6 +36,7 @@ from ucdp_addr.addrspace import (
     Addrspace,
     Field,
     Word,
+    Words,
     create_fill_field,
     create_fill_word,
     get_is_const,
@@ -541,3 +542,56 @@ def test_add_words(tmp_path):
 
     _dump_addrspace(addrspace.iter(fill=True), tmp_path)
     assert_refdata(test_add_words, tmp_path)
+
+
+class MyField(Field):
+    """Example Field Implementation."""
+
+    basename: str
+
+
+class MyWord(Word):
+    """Example Word Implementation."""
+
+    def _create_field(self, **kwargs) -> Field:
+        name = kwargs.pop("name")
+        basename = kwargs.pop("basename", None) or f"{self.name}_{name}"
+        return MyField(name=name, basename=basename, **kwargs)
+
+
+class MyWords(Words):
+    """Example Words Implementation."""
+
+    def _add_field(self, name: str, type_: u.BaseScalarType, *args, **kwargs):
+        basename = kwargs.pop("basename", None) or f"{self.name}_{name}"
+        self.word.add_field(name, type_, *args, basename=basename, **kwargs)
+
+
+class MyAddrspace(Addrspace):
+    """Example Addrspace Implementation."""
+
+    def _create_word(self, **kwargs) -> Word:
+        return MyWord(**kwargs)
+
+    def _create_words(self, **kwargs) -> Words:
+        return MyWords.create(**kwargs)
+
+
+def test_add_words_custom(tmp_path):
+    """Iterate with field filling."""
+    addrspace = MyAddrspace(name="module", width=32, depth=128)
+
+    word = addrspace.add_words("a")
+    word.add_field("a", u.UintType(14), "RW")
+    word.add_field("b", u.UintType(14), "RW", basename="base")
+    word.add_field("c", u.UintType(14), "RW")
+    word.add_field("d", u.UintType(14), "RW")
+
+    word = addrspace.add_words("b", align=16)
+    word.add_field("a", u.UintType(14), "RW")
+    word.add_field("b", u.UintType(18), "RW", basename="base")
+    word.add_field("c", u.UintType(10), "RW")
+    word.add_field("d", u.UintType(23), "RW")
+
+    _dump_addrspace(addrspace.iter(), tmp_path)
+    assert_refdata(test_add_words_custom, tmp_path)

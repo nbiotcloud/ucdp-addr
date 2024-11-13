@@ -396,7 +396,9 @@ FillWordFactory = Callable[["Addrspace", int, int, int], Word]
 FillFieldFactory = Callable[[Word, int, int, int], Field]
 
 
-class _WordsHelper(u.Object):
+class Words(u.Object):
+    """Multiple Related Words."""
+
     model_config = pyd.ConfigDict(
         frozen=False,
     )
@@ -409,9 +411,10 @@ class _WordsHelper(u.Object):
     word: Word
 
     @classmethod
-    def create(cls, name: str, addrspace: "Addrspace", word_kwargs: dict[str, Any], **kwargs) -> "_WordsHelper":
+    def create(cls, name: str, addrspace: "Addrspace", word_kwargs: dict[str, Any], **kwargs) -> "Words":
+        """Create Helper for Set of Words."""
         idx, word = cls._create_word(name, addrspace, word_kwargs, **kwargs)
-        return _WordsHelper(name=name, addrspace=addrspace, word_kwargs=word_kwargs, idx=idx, word=word)
+        return cls(name=name, addrspace=addrspace, word_kwargs=word_kwargs, idx=idx, word=word)
 
     @staticmethod
     def _create_word(
@@ -420,15 +423,20 @@ class _WordsHelper(u.Object):
         word = addrspace.add_word(f"{name}{idx}", **word_kwargs, **kwargs)
         return idx + 1, word
 
+    def _add_field(self, *args, **kwargs):
+        self.word.add_field(*args, **kwargs)
+
     def next(self):
+        """Start a new Word."""
         self.idx, self.word = self._create_word(self.name, self.addrspace, self.word_kwargs, idx=self.idx)
 
     def add_field(self, *args, **kwargs):
+        """Add Field to Current Word or start a new one."""
         try:
-            self.word.add_field(*args, **kwargs)
+            self._add_field(*args, **kwargs)
         except FullError:
             self.next()
-            self.word.add_field(*args, **kwargs)
+            self._add_field(*args, **kwargs)
 
 
 class Addrspace(u.IdentObject):
@@ -579,16 +587,25 @@ class Addrspace(u.IdentObject):
         bytealign: int | u.Expr | None = None,
         depth: int | u.Expr | None = None,
         **kwargs,
-    ) -> _WordsHelper:
+    ) -> Words:
         """Add Word."""
         if depth is not None:
             raise ValueError("'depth' is not supported on add_words()")
-        return _WordsHelper.create(
-            name, self, kwargs, offset=offset, align=align, byteoffset=byteoffset, bytealign=bytealign
+        return self._create_words(
+            name=name,
+            addrspace=self,
+            word_kwargs=kwargs,
+            offset=offset,
+            align=align,
+            byteoffset=byteoffset,
+            bytealign=bytealign,
         )
 
     def _create_word(self, **kwargs) -> Word:
         return Word(**kwargs)
+
+    def _create_words(self, **kwargs) -> Words:
+        return Words.create(**kwargs)
 
     def lock(self):
         """Lock For Modification."""
