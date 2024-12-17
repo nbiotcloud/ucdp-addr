@@ -28,6 +28,8 @@ import re
 import ucdp as u
 from pytest import fixture, raises
 from test2ref import assert_refdata
+from ucdp_glbl.attrs import Attr
+
 from ucdp_addr import DefaultAddrspace, zip_addrspaces
 from ucdp_addr.addrspace import (
     ACCESSES,
@@ -42,7 +44,6 @@ from ucdp_addr.addrspace import (
     get_is_const,
     get_is_volatile,
 )
-from ucdp_glbl.attrs import Attr
 
 
 @fixture
@@ -201,7 +202,7 @@ def test_addrspace_size():
 
 def test_addrspace_depth_size_both():
     """Address Space with Depth and Size."""
-    msg = "'depth' and 'size' are mutally exclusive."
+    msg = "'depth' and 'size' are mutually exclusive."
     with raises(ValueError, match=re.escape(msg)):
         Addrspace(depth=128, size=1024)
 
@@ -343,11 +344,11 @@ def test_word_bytewise(addrspace):
     assert word.offset == 4
     assert word.byteoffset == 16
 
-    msg = "'byteoffset' and 'offset' are mutally exclusive"
+    msg = "'byteoffset' and 'offset' are mutually exclusive"
     with raises(ValueError, match=re.escape(msg)):
         addrspace.add_word("three", byteoffset=8, offset=5)
 
-    msg = "'bytealign' and 'align' are mutally exclusive"
+    msg = "'bytealign' and 'align' are mutually exclusive"
     with raises(ValueError, match=re.escape(msg)):
         addrspace.add_word("three", bytealign=8, align=5)
 

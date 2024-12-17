@@ -47,7 +47,7 @@ def calc_depth_size(width: int, depth: int | None = None, size: u.Bytes | None =
     >>> calc_depth_size(32, depth=64, size='64')
     Traceback (most recent call last):
         ...
-    ValueError: 'depth' and 'size' are mutally exclusive.
+    ValueError: 'depth' and 'size' are mutually exclusive.
     """
     # Provide either 'size' or 'depth' and calculate the other
     if size is None:
@@ -58,6 +58,6 @@ def calc_depth_size(width: int, depth: int | None = None, size: u.Bytes | None =
         size = bytesize_(size)
         depth_calculated = int(size * 8 // width)
         if depth is not None and depth != depth_calculated:
-            raise ValueError("'depth' and 'size' are mutally exclusive.")
+            raise ValueError("'depth' and 'size' are mutually exclusive.")
         depth = depth_calculated
     return depth, size

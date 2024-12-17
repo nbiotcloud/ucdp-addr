@@ -24,6 +24,7 @@
 """Test Address Space."""
 
 import ucdp as u
+
 from ucdp_addr import AddrMap, Addrspace, Addrspaces, join_addrspaces
 
 
