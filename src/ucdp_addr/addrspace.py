@@ -378,11 +378,11 @@ def _bytealign(width, free, offset=None, align=None, byteoffset=None, bytealign=
         bytesperword = width // 8
         if byteoffset is not None:
             if offset is not None:
-                raise ValueError("'byteoffset' and 'offset' are mutally exclusive")
+                raise ValueError("'byteoffset' and 'offset' are mutually exclusive")
             offset = byteoffset // bytesperword
         if bytealign is not None:
             if align is not None:
-                raise ValueError("'bytealign' and 'align' are mutally exclusive")
+                raise ValueError("'bytealign' and 'align' are mutually exclusive")
             align = bytealign // bytesperword
     else:
         raise ValueError(f"'byteoffset/bytealign' are only available on 'width' multiple of 8 (not {width})")

@@ -24,6 +24,7 @@
 """Test Address Space."""
 
 from test2ref import assert_refdata
+
 from ucdp_addr import AddrMaster, AddrMatrix, AddrSlave
 
 
@@ -31,7 +32,7 @@ def test_basic(tmp_path, caplog):
     """Basics."""
     matrix = AddrMatrix()
     assert tuple(matrix.masters) == ()
-    assert tuple(matrix.slaves) == ()  #
+    assert tuple(matrix.slaves) == ()
 
     (tmp_path / "overview.txt").write_text(matrix.get_overview())
     matrix._check_masters_slaves()

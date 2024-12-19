@@ -3,8 +3,9 @@
 from pathlib import Path
 
 import ucdp as u
-import ucdp_addr
 from pytest import fixture
+
+import ucdp_addr
 
 
 @fixture

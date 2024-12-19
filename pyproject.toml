@@ -178,7 +178,7 @@ ignore = [
 convention = "google"
 
 [tool.pytest.ini_options]
-addopts = """
+addopts ="""
     --cov ucdp_addr
     --cov-report term
     --cov-report html
@@ -186,7 +186,7 @@ addopts = """
     --doctest-modules
     --ignore=noxfile.py
     --ignore-glob=tests/testdata*
-    --log-level=DEBUG
+    --log-level=INFO
     --junitxml=report.xml
 """
 filterwarnings = [
@@ -204,7 +204,7 @@ exclude_lines = [
 [tool.mypy]
 disable_error_code = "misc"
 ignore_missing_imports = true
-plugins = "pydantic.mypy"
+# plugins = "pydantic.mypy"
 
 [[tool.mypy.overrides]]
 module = "tests.*"
