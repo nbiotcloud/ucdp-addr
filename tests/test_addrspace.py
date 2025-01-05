@@ -145,6 +145,9 @@ def test_add_word(addrspace):
     assert word4.depth is None
     assert word4.slice == u.Slice("31")
 
+    with raises(ValueError, match=re.escape("Word 'word5' has illegal depth of zero.")):
+        addrspace.add_word("word5", depth=0)
+
     assert tuple(addrspace.words) == (word0, word1, word2, word4)
 
     assert addrspace.get_word_hiername(word0) == "name.word0"
