@@ -127,6 +127,8 @@ class Access(u.IdentLightObject):
         return self.name
 
 
+NA = Access(name="NA")
+
 RO = Access(name="RO", read=_R)
 RC = Access(name="RC", read=_RC)
 RS = Access(name="RS", read=_RS)
@@ -575,6 +577,8 @@ class Addrspace(u.IdentObject):
         )
         if word.slice.left >= self.depth:
             raise FullError(f"Word {word.name!r} exceeds address space depth of {self.depth}")
+        if word.depth == 0:
+            raise ValueError(f"Word {word.name!r} has illegal depth of zero.")
         self.words.add(word)
         return word
 
