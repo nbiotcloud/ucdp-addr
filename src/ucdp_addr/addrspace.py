@@ -28,7 +28,8 @@ Address Space.
 
 from collections import defaultdict
 from collections.abc import Callable, Iterator
-from typing import Any, Literal, Optional
+from string import ascii_lowercase
+from typing import Any, Literal, Optional, TypeAlias
 
 import pydantic as pyd
 import ucdp as u
@@ -37,6 +38,10 @@ from icdutil import num
 from ucdp_glbl.attrs import CastableAttrs
 
 from .util import calc_depth_size
+
+NamingScheme: TypeAlias = Literal["dec", "alpha"] | Callable[[int], str]
+
+_ALPHA_PER_DIGIT = len(ascii_lowercase)
 
 
 class FullError(ValueError):
@@ -408,21 +413,30 @@ class Words(u.Object):
     name: str
     addrspace: "Addrspace"
     word_kwargs: dict[str, Any]
+    naming: NamingScheme = "dec"
 
     idx: int
     word: Word
 
     @classmethod
-    def create(cls, name: str, addrspace: "Addrspace", word_kwargs: dict[str, Any], **kwargs) -> "Words":
+    def create(
+        cls, name: str, addrspace: "Addrspace", word_kwargs: dict[str, Any], naming: NamingScheme = "dec", **kwargs
+    ) -> "Words":
         """Create Helper for Set of Words."""
-        idx, word = cls._create_word(name, addrspace, word_kwargs, **kwargs)
-        return cls(name=name, addrspace=addrspace, word_kwargs=word_kwargs, idx=idx, word=word)
+        idx, word = cls._create_word(name, addrspace, word_kwargs, naming, **kwargs)
+        return cls(name=name, addrspace=addrspace, word_kwargs=word_kwargs, idx=idx, word=word, naming=naming)
 
     @staticmethod
     def _create_word(
-        name: str, addrspace: "Addrspace", word_kwargs: dict[str, Any], idx: int = 0, **kwargs
+        name: str, addrspace: "Addrspace", word_kwargs: dict[str, Any], naming: NamingScheme, idx: int = 0, **kwargs
     ) -> tuple[int, Word]:
-        word = addrspace.add_word(f"{name}{idx}", **word_kwargs, **kwargs)
+        if naming == "dec":
+            suffix = str(idx)
+        elif naming == "alpha":
+            suffix = name_alpha(idx)
+        else:
+            suffix = naming(idx)
+        word = addrspace.add_word(f"{name}{suffix}", **word_kwargs, **kwargs)
         return idx + 1, word
 
     def _add_field(self, *args, **kwargs):
@@ -430,7 +444,7 @@ class Words(u.Object):
 
     def next(self):
         """Start a new Word."""
-        self.idx, self.word = self._create_word(self.name, self.addrspace, self.word_kwargs, idx=self.idx)
+        self.idx, self.word = self._create_word(self.name, self.addrspace, self.word_kwargs, self.naming, idx=self.idx)
 
     def add_field(self, *args, **kwargs):
         """Add Field to Current Word or start a new one."""
@@ -458,6 +472,9 @@ class Addrspace(u.IdentObject):
     """Words within Address Space."""
     attrs: CastableAttrs = ()
     """Attributes."""
+
+    add_words_naming: NamingScheme = "dec"
+    """Naming Scheme for words created by `add_words`."""
 
     bus: Access | None = None
     core: Access | None = None
@@ -590,6 +607,7 @@ class Addrspace(u.IdentObject):
         byteoffset: int | u.Expr | None = None,
         bytealign: int | u.Expr | None = None,
         depth: int | u.Expr | None = None,
+        naming: NamingScheme | None = None,
         **kwargs,
     ) -> Words:
         """Add Word."""
@@ -603,6 +621,7 @@ class Addrspace(u.IdentObject):
             align=align,
             byteoffset=byteoffset,
             bytealign=bytealign,
+            naming=naming or self.add_words_naming,
         )
 
     def _create_word(self, **kwargs) -> Word:
@@ -806,6 +825,45 @@ def get_is_const(bus: Access | None, core: Access | None) -> bool:
         if core.write is not None:
             return False
     return True
+
+
+__dec_to_alpha = ("", *ascii_lowercase)
+
+
+def name_alpha(num: int) -> str:
+    """
+    Convert number to a alpha digit.
+
+    >>> name_alpha(0)
+    'a'
+    >>> name_alpha(25)
+    'z'
+    >>> name_alpha(26)
+    'aa'
+    >>> name_alpha(27)
+    'ab'
+    >>> name_alpha(26+25)
+    'az'
+    >>> name_alpha(26+26)
+    'ba'
+    >>> name_alpha(26+26+25)
+    'bz'
+    >>> name_alpha(1000)
+    'alm'
+    """
+    num += 1
+
+    if num < _ALPHA_PER_DIGIT:
+        return __dec_to_alpha[num]
+
+    result: list[str] = []
+    while num:
+        num, rem = divmod(num, _ALPHA_PER_DIGIT)
+        result.insert(0, __dec_to_alpha[rem])
+        if not rem:
+            num -= 1
+            result.insert(0, "z")
+    return "".join(result)
 
 
 def create_fill_word(addrspace, idx, offset, depth) -> Word:
