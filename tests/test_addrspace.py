@@ -26,7 +26,7 @@
 import re
 
 import ucdp as u
-from pytest import fixture, raises
+from pytest import fixture, mark, raises
 from test2ref import assert_refdata
 from ucdp_glbl.attrs import Attr
 
@@ -546,6 +546,33 @@ def test_add_words(tmp_path):
 
     _dump_addrspace(addrspace.iter(fill=True), tmp_path)
     assert_refdata(test_add_words, tmp_path)
+
+
+def _mynaming(value: int) -> str:
+    return chr(65 + value)
+
+
+@mark.parametrize("naming", ("dec", "alpha", _mynaming))
+def test_add_words_naming(tmp_path, naming):
+    """Iterate with field filling."""
+    addrspace = Addrspace(name="module", width=32, depth=128, add_words_naming=naming)
+
+    word = addrspace.add_words("a")
+    word.add_field("a", u.UintType(14), "RW")
+    word.add_field("b", u.UintType(14), "RW")
+    word.add_field("c", u.UintType(14), "RW")
+    word.add_field("d", u.UintType(14), "RW")
+
+    for name, wordnaming in (("b", "dec"), ("c", "alpha"), ("d", _mynaming)):
+        word = addrspace.add_words(name, align=16, naming=wordnaming)
+        word.add_field("a", u.UintType(14), "RW")
+        word.add_field("b", u.UintType(18), "RW")
+        word.add_field("c", u.UintType(10), "RW")
+        word.add_field("d", u.UintType(23), "RW")
+
+    flavor = "func" if naming is _mynaming else naming
+    _dump_addrspace(addrspace.iter(), tmp_path)
+    assert_refdata(test_add_words_naming, tmp_path, flavor=flavor)
 
 
 class MyField(Field):
