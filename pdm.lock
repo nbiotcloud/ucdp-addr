@@ -5,7 +5,7 @@
 groups = ["default", "checktypes", "doc", "format", "test"]
 strategy = ["inherit_metadata"]
 lock_version = "4.5.0"
-content_hash = "sha256:e2d89202da3b217aaaf1cb3ac92f40ebfc19410d28a230f9e7ee461325e2db6a"
+content_hash = "sha256:312c705714a383cf4c92a0464823f4af9aea16f28417f41ec185c12973c41711"
 
 [[metadata.targets]]
 requires_python = ">=3.10.0,<4.0"
@@ -392,13 +392,13 @@ files = [
 
 [[package]]
 name = "filelock"
-version = "3.16.1"
-requires_python = ">=3.8"
+version = "3.17.0"
+requires_python = ">=3.9"
 summary = "A platform independent file lock."
 groups = ["default", "format"]
 files = [
-    {file = "filelock-3.16.1-py3-none-any.whl", hash = "sha256:2082e5703d51fbf98ea75855d9d5527e33d8ff23099bec374a134febee6946b0"},
-    {file = "filelock-3.16.1.tar.gz", hash = "sha256:c249fbfcd5db47e5e2d6d62198e565475ee65e4831e2561c8e313fa7eb961435"},
+    {file = "filelock-3.17.0-py3-none-any.whl", hash = "sha256:533dc2f7ba78dc2f0f531fc6c4940addf7b70a481e269a5a3b93be94ffbe8338"},
+    {file = "filelock-3.17.0.tar.gz", hash = "sha256:ee4e77401ef576ebb38cd7f13b9b28893194acc20a8e68e18730ba9c0e54660e"},
 ]
 
 [[package]]
@@ -426,7 +426,7 @@ files = [
 
 [[package]]
 name = "griffe"
-version = "1.5.4"
+version = "1.5.5"
 requires_python = ">=3.9"
 summary = "Signatures for entire Python programs. Extract the structure, the frame, the skeleton of your project, to generate API documentation or find breaking changes in your API."
 groups = ["doc"]
@@ -435,8 +435,8 @@ dependencies = [
     "colorama>=0.4",
 ]
 files = [
-    {file = "griffe-1.5.4-py3-none-any.whl", hash = "sha256:ed33af890586a5bebc842fcb919fc694b3dc1bc55b7d9e0228de41ce566b4a1d"},
-    {file = "griffe-1.5.4.tar.gz", hash = "sha256:073e78ad3e10c8378c2f798bd4ef87b92d8411e9916e157fd366a17cc4fd4e52"},
+    {file = "griffe-1.5.5-py3-none-any.whl", hash = "sha256:2761b1e8876c6f1f9ab1af274df93ea6bbadd65090de5f38f4cb5cc84897c7dd"},
+    {file = "griffe-1.5.5.tar.gz", hash = "sha256:35ee5b38b93d6a839098aad0f92207e6ad6b70c3e8866c08ca669275b8cba585"},
 ]
 
 [[package]]
@@ -457,7 +457,7 @@ files = [
 
 [[package]]
 name = "humannum"
-version = "1.1.1"
+version = "1.2.0"
 requires_python = "<4.0,>=3.9.0"
 summary = "Human Friendly Numbers"
 groups = ["default"]
@@ -465,8 +465,8 @@ dependencies = [
     "humanfriendly>=10.0",
 ]
 files = [
-    {file = "humannum-1.1.1-py3-none-any.whl", hash = "sha256:c04b51d150c55f8df209a868ba013580c0fd8c650c3d1cc3548106548d78f650"},
-    {file = "humannum-1.1.1.tar.gz", hash = "sha256:a6d4861f07da8cc097206a1b44cf9282b929e3b04a4904c416d0ce4bf3c16dec"},
+    {file = "humannum-1.2.0-py3-none-any.whl", hash = "sha256:fc7190dad470d3268731fa6368b8bda15721435e811814c3aab6ed048129b57c"},
+    {file = "humannum-1.2.0.tar.gz", hash = "sha256:d031196e784fef879d26e947e586414f47cc8f20a95ba1135f5e1121da03325f"},
 ]
 
 [[package]]
@@ -489,13 +489,13 @@ files = [
 
 [[package]]
 name = "identify"
-version = "2.6.5"
+version = "2.6.6"
 requires_python = ">=3.9"
 summary = "File identification library for Python"
 groups = ["format"]
 files = [
-    {file = "identify-2.6.5-py2.py3-none-any.whl", hash = "sha256:14181a47091eb75b337af4c23078c9d09225cd4c48929f521f3bf16b09d02566"},
-    {file = "identify-2.6.5.tar.gz", hash = "sha256:c10b33f250e5bba374fae86fb57f3adcebf1161bce7cdf92031915fd480c13bc"},
+    {file = "identify-2.6.6-py2.py3-none-any.whl", hash = "sha256:cbd1810bce79f8b671ecb20f53ee0ae8e86ae84b557de31d89709dc2a48ba881"},
+    {file = "identify-2.6.6.tar.gz", hash = "sha256:7bec12768ed44ea4761efb47806f0a41f86e7c0a5fdf5950d4648c90eca7e251"},
 ]
 
 [[package]]
@@ -629,7 +629,7 @@ files = [
 
 [[package]]
 name = "makolator"
-version = "2.9.2"
+version = "2.10.1"
 requires_python = "<4.0,>=3.10.0"
 summary = "Extended Mako Templates for Python."
 groups = ["default"]
@@ -641,8 +641,8 @@ dependencies = [
     "uniquer>=1.0.0",
 ]
 files = [
-    {file = "makolator-2.9.2-py3-none-any.whl", hash = "sha256:3e60565e09b5d0d5eebe47ecc03eca7ecc5c56296bc2490b78ae0b3bca749264"},
-    {file = "makolator-2.9.2.tar.gz", hash = "sha256:bcce96a57d01c6c930552fbbe1cab468f91182eec67eb82f55ef9d6b1d936fbf"},
+    {file = "makolator-2.10.1-py3-none-any.whl", hash = "sha256:84a5bf1be039ce62f07be2a1aa1a339a88c3ceea9666af04bc4b09f2f41e4163"},
+    {file = "makolator-2.10.1.tar.gz", hash = "sha256:0bd7cf8d135f03ee95654814785c45122885f8fb9f78a2fd35b07a4b4842df77"},
 ]
 
 [[package]]
@@ -882,7 +882,7 @@ files = [
 
 [[package]]
 name = "mkdocs-material"
-version = "9.5.49"
+version = "9.5.50"
 requires_python = ">=3.8"
 summary = "Documentation that simply works"
 groups = ["doc"]
@@ -900,8 +900,8 @@ dependencies = [
     "requests~=2.26",
 ]
 files = [
-    {file = "mkdocs_material-9.5.49-py3-none-any.whl", hash = "sha256:c3c2d8176b18198435d3a3e119011922f3e11424074645c24019c2dcf08a360e"},
-    {file = "mkdocs_material-9.5.49.tar.gz", hash = "sha256:3671bb282b4f53a1c72e08adbe04d2481a98f85fed392530051f80ff94a9621d"},
+    {file = "mkdocs_material-9.5.50-py3-none-any.whl", hash = "sha256:f24100f234741f4d423a9d672a909d859668a4f404796be3cf035f10d6050385"},
+    {file = "mkdocs_material-9.5.50.tar.gz", hash = "sha256:ae5fe16f3d7c9ccd05bb6916a7da7420cf99a9ce5e33debd9d40403a090d5825"},
 ]
 
 [[package]]
@@ -1083,7 +1083,7 @@ files = [
 
 [[package]]
 name = "pre-commit"
-version = "4.0.1"
+version = "4.1.0"
 requires_python = ">=3.9"
 summary = "A framework for managing and maintaining multi-language pre-commit hooks."
 groups = ["format"]
@@ -1095,13 +1095,13 @@ dependencies = [
     "virtualenv>=20.10.0",
 ]
 files = [
-    {file = "pre_commit-4.0.1-py2.py3-none-any.whl", hash = "sha256:efde913840816312445dc98787724647c65473daefe420785f885e8ed9a06878"},
-    {file = "pre_commit-4.0.1.tar.gz", hash = "sha256:80905ac375958c0444c65e9cebebd948b3cdb518f335a091a670a89d652139d2"},
+    {file = "pre_commit-4.1.0-py2.py3-none-any.whl", hash = "sha256:d29e7cb346295bcc1cc75fc3e92e343495e3ea0196c9ec6ba53f49f10ab6ae7b"},
+    {file = "pre_commit-4.1.0.tar.gz", hash = "sha256:ae3f018575a588e30dfddfab9a05448bfbd6b73d78709617b5a2b853549716d4"},
 ]
 
 [[package]]
 name = "pydantic"
-version = "2.10.5"
+version = "2.10.6"
 requires_python = ">=3.8"
 summary = "Data validation using Python type hints"
 groups = ["default"]
@@ -1111,8 +1111,8 @@ dependencies = [
     "typing-extensions>=4.12.2",
 ]
 files = [
-    {file = "pydantic-2.10.5-py3-none-any.whl", hash = "sha256:4dd4e322dbe55472cb7ca7e73f4b63574eecccf2835ffa2af9021ce113c83c53"},
-    {file = "pydantic-2.10.5.tar.gz", hash = "sha256:278b38dbbaec562011d659ee05f63346951b3a248a6f3642e1bc68894ea2b4ff"},
+    {file = "pydantic-2.10.6-py3-none-any.whl", hash = "sha256:427d664bf0b8a2b34ff5dd0f5a18df00591adcee7198fbd71981054cef37b584"},
+    {file = "pydantic-2.10.6.tar.gz", hash = "sha256:ca5daa827cce33de7a42be142548b0096bf05a7e7b365aebfa5f8eeec7128236"},
 ]
 
 [[package]]
@@ -1205,7 +1205,7 @@ files = [
 
 [[package]]
 name = "pymdown-extensions"
-version = "10.14"
+version = "10.14.1"
 requires_python = ">=3.8"
 summary = "Extension pack for Python Markdown."
 groups = ["doc"]
@@ -1214,8 +1214,8 @@ dependencies = [
     "pyyaml",
 ]
 files = [
-    {file = "pymdown_extensions-10.14-py3-none-any.whl", hash = "sha256:202481f716cc8250e4be8fce997781ebf7917701b59652458ee47f2401f818b5"},
-    {file = "pymdown_extensions-10.14.tar.gz", hash = "sha256:741bd7c4ff961ba40b7528d32284c53bc436b8b1645e8e37c3e57770b8700a34"},
+    {file = "pymdown_extensions-10.14.1-py3-none-any.whl", hash = "sha256:637951cbfbe9874ba28134fb3ce4b8bcadd6aca89ac4998ec29dcbafd554ae08"},
+    {file = "pymdown_extensions-10.14.1.tar.gz", hash = "sha256:b65801996a0cd4f42a3110810c306c45b7313c09b0610a6f773730f2a9e3c96b"},
 ]
 
 [[package]]
@@ -1634,7 +1634,7 @@ files = [
 
 [[package]]
 name = "ucdp"
-version = "0.24.2"
+version = "0.25.1"
 requires_python = "<4.0,>=3.10.0"
 summary = "Unified Chip Design Platform"
 groups = ["default"]
@@ -1645,7 +1645,7 @@ dependencies = [
     "click-bash4-2-completion>=0.1.0",
     "click>=8.1.7",
     "fuzzywuzzy>=0.18.0",
-    "humannum>=1.1.0",
+    "humannum>=1.2.0",
     "icdutil>=0.3.1",
     "makolator>=2.8.0",
     "matchor>=0.1.0",
@@ -1655,13 +1655,13 @@ dependencies = [
     "uniquer>=1.0.2",
 ]
 files = [
-    {file = "ucdp-0.24.2-py3-none-any.whl", hash = "sha256:33412046febad3a0edf1c438aa9772c4c12552704addc7277e3b534f9dddad5f"},
-    {file = "ucdp-0.24.2.tar.gz", hash = "sha256:94caecba2c3e396ac7897f363ea347604a0affdbd6922ccbaed773e8e64d8683"},
+    {file = "ucdp-0.25.1-py3-none-any.whl", hash = "sha256:fa1aea667a9bfd7061f21f272b20e3b524bbf67e2e2a531df972cbd90aeec3cd"},
+    {file = "ucdp-0.25.1.tar.gz", hash = "sha256:b91a082d13603592e005cd5e0e852d568f5cdb9b683463b574cce91ffffb30f7"},
 ]
 
 [[package]]
 name = "ucdp-glbl"
-version = "1.3.0"
+version = "1.4.0"
 requires_python = "<4.0,>=3.10.0"
 summary = "Unified Chip Design Platform - Global"
 groups = ["default"]
@@ -1669,8 +1669,8 @@ dependencies = [
     "ucdp>=0.16.0",
 ]
 files = [
-    {file = "ucdp_glbl-1.3.0-py3-none-any.whl", hash = "sha256:76d05e8652ddba3a9c60c7f8b8a26e9edc0c9050163bff4fe001aec60f71b9e6"},
-    {file = "ucdp_glbl-1.3.0.tar.gz", hash = "sha256:cafaff0bec3980b9aa5f3ca94a4f2dfd778c694ec0360277ff98a24f3fa9eaba"},
+    {file = "ucdp_glbl-1.4.0-py3-none-any.whl", hash = "sha256:0cd11fab99385270c84dfa72801e6660f2f071098d2cbda7c9b70f04d358ac10"},
+    {file = "ucdp_glbl-1.4.0.tar.gz", hash = "sha256:90584e2793de468ad9a31eb69381d9299c29cf1ccdcc6ff9c0fa4847a7fa7cb9"},
 ]
 
 [[package]]
@@ -1697,7 +1697,7 @@ files = [
 
 [[package]]
 name = "virtualenv"
-version = "20.28.1"
+version = "20.29.1"
 requires_python = ">=3.8"
 summary = "Virtual Python Environment builder"
 groups = ["format"]
@@ -1708,8 +1708,8 @@ dependencies = [
     "platformdirs<5,>=3.9.1",
 ]
 files = [
-    {file = "virtualenv-20.28.1-py3-none-any.whl", hash = "sha256:412773c85d4dab0409b83ec36f7a6499e72eaf08c80e81e9576bca61831c71cb"},
-    {file = "virtualenv-20.28.1.tar.gz", hash = "sha256:5d34ab240fdb5d21549b76f9e8ff3af28252f5499fb6d6f031adac4e5a8c5329"},
+    {file = "virtualenv-20.29.1-py3-none-any.whl", hash = "sha256:4e4cb403c0b0da39e13b46b1b2476e505cb0046b25f242bee80f62bf990b2779"},
+    {file = "virtualenv-20.29.1.tar.gz", hash = "sha256:b8b8970138d32fb606192cb97f6cd4bb644fa486be9308fb9b63f81091b5dc35"},
 ]
 
 [[package]]
