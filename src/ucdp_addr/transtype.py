@@ -1,6 +1,7 @@
 """Access Type Description."""
 
 from enum import Enum
+from typing import TypeAlias
 
 
 class TransType(Enum):
@@ -14,7 +15,10 @@ class TransType(Enum):
         return self.name
 
 
-def get_transtype(data, noscat=False):
+Data: TypeAlias = int | tuple[int, ...] | list[int] | tuple[tuple[int, int], ...] | list[tuple[int, int]]
+
+
+def get_transtype(data: Data, noscat: bool = False):
     """
     Determine :any:`Access` of `data`.
 
@@ -31,10 +35,13 @@ def get_transtype(data, noscat=False):
       ...
     TypeError: Scattered Data is not supported
     """
+    if isinstance(data, int):
+        return TransType.SINGLE
     if isinstance(data, (tuple, list)):
-        if isinstance(data[0], (tuple, list)):
+        if all(isinstance(item, int) for item in data):
+            return TransType.BURST
+        if all(isinstance(item, tuple) and len(item) == 2 for item in data):  # noqa: PLR2004
             if noscat:
                 raise TypeError("Scattered Data is not supported")
             return TransType.SCAT
-        return TransType.BURST
-    return TransType.SINGLE
+    raise TypeError(data)
