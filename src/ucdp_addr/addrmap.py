@@ -34,6 +34,7 @@ import ucdp as u
 from icdutil import num
 from ucdp_glbl.attrs import format_attrs
 
+from .addrmapref import AddrMapRef
 from .addrspace import Addrspace, ReservedAddrspace
 from .addrspaces import Addrspaces
 from .defines import Defines
@@ -76,6 +77,13 @@ class AddrMap(u.Object):
             self._check_overlapping(pos, addrspace)
 
         self._addrspaces.insert(pos, addrspace)
+
+    def get(self, addrspace: Addrspace) -> AddrMapRef:
+        """Add Address Space."""
+        for item in self._addrspaces:
+            if item.is_overlapping(addrspace):
+                return AddrMapRef(addrspace=item.get_intersect(addrspace))
+        raise ValueError(f"{addrspace!r} does not exists")
 
     def __iter__(self) -> Iterator[Addrspace]:
         yield from self._addrspaces

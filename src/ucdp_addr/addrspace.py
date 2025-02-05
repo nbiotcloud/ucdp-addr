@@ -458,6 +458,8 @@ class Words(u.Object):
 class Addrspace(u.IdentObject):
     """Address Space."""
 
+    name: str = ""
+    """Name."""
     baseaddr: u.Hex = 0
     """Base Address"""
     width: int = 32

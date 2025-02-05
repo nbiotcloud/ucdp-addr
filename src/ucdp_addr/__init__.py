@@ -46,6 +46,7 @@ from .addrspace import (
 from .addrspacealias import AddrspaceAlias
 from .addrspaces import Addrspaces, join_addrspaces, zip_addrspaces
 from .const import NOREF
+from .resolver import resolve
 from .util import calc_depth_size
 
 __all__ = [
@@ -74,6 +75,7 @@ __all__ = [
     "NOREF",
     "ReadOp",
     "ReservedAddrspace",
+    "resolve",
     "Word",
     "WriteOp",
     "zip_addrspaces",
