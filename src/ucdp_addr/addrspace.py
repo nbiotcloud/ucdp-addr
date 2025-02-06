@@ -29,15 +29,20 @@ Address Space.
 from collections import defaultdict
 from collections.abc import Callable, Iterator
 from string import ascii_lowercase
-from typing import Any, Literal, Optional, TypeAlias
+from typing import Annotated, Any, Literal, Optional, TypeAlias
 
 import pydantic as pyd
 import ucdp as u
 from humannum import bytesize_
 from icdutil import num
+from pydantic import (
+    BeforeValidator,
+    PlainSerializer,
+    WithJsonSchema,
+)
 from ucdp_glbl.attrs import CastableAttrs
 
-from .util import calc_depth_size
+from .addrrange import AddrRange
 
 NamingScheme: TypeAlias = Literal["dec", "alpha"] | Callable[[int], str]
 
@@ -218,6 +223,14 @@ def cast_access(value: str | Access) -> Access:
     if isinstance(value, Access):
         return value
     return ACCESSES[value]
+
+
+ToAccess = Annotated[
+    Access,
+    BeforeValidator(lambda x: cast_access(x)),
+    PlainSerializer(lambda x: str(x), return_type=str),
+    WithJsonSchema({"type": "string"}, mode="serialization"),
+]
 
 
 def get_counteraccess(access: Access) -> Access | None:
@@ -455,19 +468,11 @@ class Words(u.Object):
             self._add_field(*args, **kwargs)
 
 
-class Addrspace(u.IdentObject):
+class Addrspace(AddrRange, u.IdentObject):
     """Address Space."""
 
     name: str = ""
     """Name."""
-    baseaddr: u.Hex = 0
-    """Base Address"""
-    width: int = 32
-    """Width in Bits."""
-    depth: int = u.Field(repr=False)
-    """Number of words."""
-    size: u.Bytes
-    """Size in Bytes."""
     is_sub: bool = True
     """Address Decoder Just Compares `addrwidth` LSBs."""
     words: u.Namespace = u.Field(default_factory=u.Namespace, repr=False)
@@ -478,45 +483,9 @@ class Addrspace(u.IdentObject):
     add_words_naming: NamingScheme = "dec"
     """Naming Scheme for words created by `add_words`."""
 
-    bus: Access | None = None
-    core: Access | None = None
+    bus: ToAccess | None = None
+    core: ToAccess | None = None
     is_volatile: bool | None = None
-
-    def __init__(
-        self,
-        width: int = 32,
-        depth: int | None = None,
-        size: u.Bytes | None = None,
-        bus: Access | str | None = None,
-        core: Access | str | None = None,
-        **kwargs,
-    ):
-        depth, size = calc_depth_size(width, depth, size)
-        if bus is not None:
-            bus = cast_access(bus)
-        if core is not None:
-            core = cast_access(core)
-        super().__init__(width=width, depth=depth, size=size, bus=bus, core=core, **kwargs)
-
-    @property
-    def addrwidth(self) -> int:
-        """Address Width."""
-        return num.calc_unsigned_width(int(self.size) - 1)
-
-    @property
-    def endaddr(self) -> u.Hex:
-        """End Address - `baseaddr+size-1`."""
-        return self.baseaddr + self.size - 1
-
-    @property
-    def nextaddr(self) -> u.Hex:
-        """Next Free Address - `baseaddr+size`."""
-        return self.baseaddr + self.size
-
-    @property
-    def wordsize(self) -> float:
-        """Number of Bytes Per Word."""
-        return self.width / 8
 
     @property
     def size_used(self) -> u.Bytes:
@@ -529,11 +498,6 @@ class Addrspace(u.IdentObject):
         if self.words:
             return tuple(self.words)[-1].slice.left + 1
         return 0
-
-    @property
-    def org(self) -> str:
-        """Organization."""
-        return f"{self.depth}x{self.width} ({self.size})"
 
     @property
     def info(self) -> str:
