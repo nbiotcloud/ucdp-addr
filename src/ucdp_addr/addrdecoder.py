@@ -64,7 +64,7 @@ class AddrDecoder(u.Object):
         for addrspace in self.addrmap:
             ref = addrspace.slave.ref
             if ref is None:
-                LOGGER.warning("%s: %s does not reference anything", self, addrspace)
+                LOGGER.warning("%r: %r does not reference anything", self, addrspace)
                 continue
             if ref is NOREF:
                 continue

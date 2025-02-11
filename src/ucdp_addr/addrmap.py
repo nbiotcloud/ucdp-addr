@@ -81,8 +81,9 @@ class AddrMap(u.Object):
     def get(self, addrspace: Addrspace) -> AddrMapRef:
         """Add Address Space."""
         for item in self._addrspaces:
-            if item.is_overlapping(addrspace):
-                return AddrMapRef(addrspace=item.get_intersect(addrspace))
+            intersect = item.get_intersect(addrspace)
+            if intersect:
+                return AddrMapRef.create(addrspace=intersect)
         raise ValueError(f"{addrspace!r} does not exists")
 
     def __iter__(self) -> Iterator[Addrspace]:

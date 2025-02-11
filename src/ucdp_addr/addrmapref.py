@@ -1,6 +1,5 @@
 """Module, Word and Field Reference."""
 
-from functools import cached_property
 from typing import TypeAlias
 
 import ucdp as u
@@ -12,7 +11,10 @@ from .addrspace import Addrspace, Field, Word
 class AddrMapRef(u.Object):
     """Address Map Reference."""
 
-    addrspace: Addrspace
+    addrrange: AddrRange
+    """Address Range."""
+
+    addrspace: Addrspace | None = None
     """Address Space."""
 
     word: Word | None = None
@@ -22,26 +24,41 @@ class AddrMapRef(u.Object):
     """Field."""
 
     def __str__(self) -> str:
-        result = f"{self.addrspace.name}"
-        if self.word:
-            result = f"{result}.{self.word.name}"
-            if self.field:
-                result = f"{result}.{self.field.name}"
-        return result
+        if self.addrspace:
+            result = f"{self.addrspace.name}"
+            if self.word:
+                result = f"{result}.{self.word.name}"
+                if self.field:
+                    result = f"{result}.{self.field.name}"
+            return result
+        return f"{self.addrrange.baseaddr}"
 
-    @cached_property
-    def addrrange(self) -> AddrRange:
-        """Address Range."""
-        addrspace = self.addrspace
-        word = self.word
-        if word:
-            return AddrRange(
-                baseaddr=addrspace.baseaddr + word.byteoffset,
-                width=word.width,
-                depth=word.depth or 1,
-            )
-        return AddrRange(baseaddr=addrspace.baseaddr, width=addrspace.width, depth=addrspace.depth)
+    @staticmethod
+    def create(
+        addrspace: Addrspace, word: Word | None = None, field: Field | None = None, addrrange: AddrRange | None = None
+    ) -> "AddrMapRef":
+        """
+        Create Addrspace with Proper AddrRange.
+
+        Args:
+            addrspace: Address Space
+
+        Keyword Args:
+            word: Word
+            field: Field (requires word as well)
+            addrrange: Address Range
+        """
+        if addrrange is None:
+            if word:
+                addrrange = AddrRange(
+                    baseaddr=addrspace.baseaddr + word.byteoffset,
+                    width=word.width,
+                    depth=word.depth or 1,
+                )
+            else:
+                addrrange = AddrRange(baseaddr=addrspace.baseaddr, width=addrspace.width, depth=addrspace.depth)
+        return AddrMapRef(addrrange=addrrange, addrspace=addrspace, word=word, field=field)
 
 
-RawAddrMapRef: TypeAlias = AddrMapRef | Addrspace | str
+RawAddrMapRef: TypeAlias = AddrMapRef | AddrRange | Addrspace | str | int
 """Unresolved Address Map Reference."""

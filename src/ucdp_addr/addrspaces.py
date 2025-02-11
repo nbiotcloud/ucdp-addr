@@ -56,7 +56,7 @@ def zip_addrspaces(lefts, rights) -> Iterator[tuple[Addrspace, ...]]:
     ...     Addrspace(name='b0', baseaddr=0x0000, size=0x1000),
     ...     Addrspace(name='b1', baseaddr=0x1000, size=0x800),
     ...     Addrspace(name='b2', baseaddr=0x1800, size=0x800))
-    >>> for left, right in zip_addrspaces(one, other): print(repr(left.info), repr(right.info))
+    >>> for left, right in zip_addrspaces(one, other): print(f"{str(left)!r} {str(right)!r}")
     'a0 +0x0 1024x32' 'b0 +0x0 1024x32'
     'a1 +0x1000 1024x32' 'b1 +0x1000 512x32'
     'a1 +0x1000 1024x32' 'b2 +0x1800 512x32'

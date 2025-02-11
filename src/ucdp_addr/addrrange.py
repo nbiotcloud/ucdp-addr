@@ -32,6 +32,8 @@ from pydantic import PositiveInt
 
 from .util import calc_depth_size
 
+BASEADDR_DEFAULT = u.Hex(0)
+
 
 class AddrRange(u.Object):
     """
@@ -57,15 +59,15 @@ class AddrRange(u.Object):
         Hex('0x1000')
         >>> addrrange.wordsize
         4.0
-        >>> addrrange.info
+        >>> str(addrrange)
         '0x0 1024x32 (4 KB)'
-        >>> AddrRange(depth=16).info
+        >>> str(AddrRange(depth=16))
         '0x0 16x32 (64 bytes)'
-        >>> AddrRange(size=16).info
+        >>> str(AddrRange(size=16))
         '0x0 4x32 (16 bytes)'
     """
 
-    baseaddr: u.Hex = 0
+    baseaddr: u.Hex = BASEADDR_DEFAULT
     """Base Address"""
     width: PositiveInt = 32
     """Width in Bits."""
@@ -76,7 +78,7 @@ class AddrRange(u.Object):
 
     def __init__(
         self,
-        baseaddr: u.Hex = 0,
+        baseaddr: u.Hex = BASEADDR_DEFAULT,
         width: PositiveInt = 32,
         depth: PositiveInt | None = None,
         size: u.Bytes | None = None,
@@ -89,6 +91,11 @@ class AddrRange(u.Object):
     def addrwidth(self) -> PositiveInt:
         """Address Width."""
         return num.calc_unsigned_width(int(self.size) - 1)
+
+    @property
+    def addrmask(self) -> PositiveInt:
+        """Address Width."""
+        return (2**self.addrwidth) - 1
 
     @property
     def endaddr(self) -> u.Hex:
@@ -105,9 +112,7 @@ class AddrRange(u.Object):
         """Number of Bytes Per Word."""
         return self.width / 8
 
-    @property
-    def info(self) -> str:
-        """Info."""
+    def __str__(self) -> str:
         return f"{self.baseaddr} {self.org}"
 
     @property

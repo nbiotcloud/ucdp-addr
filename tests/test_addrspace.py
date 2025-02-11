@@ -31,10 +31,8 @@ from test2ref import assert_refdata
 from ucdp_glbl.attrs import Attr
 
 from ucdp_addr import DefaultAddrspace, zip_addrspaces
+from ucdp_addr.access import ACCESSES, RO, RW
 from ucdp_addr.addrspace import (
-    ACCESSES,
-    RO,
-    RW,
     Addrspace,
     Field,
     Word,

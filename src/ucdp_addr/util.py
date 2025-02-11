@@ -61,3 +61,33 @@ def calc_depth_size(width: int, depth: int | None = None, size: u.Bytes | None =
             raise ValueError("'depth' and 'size' are mutually exclusive.")
         depth = depth_calculated
     return depth, size
+
+
+def split_keyvaluepairs(value: str) -> dict[str, str]:
+    """
+    Split comma-separated fields into (name, value) pairs.
+
+    >>> split_keyvaluepairs('a=4')
+    {'a': '4'}
+    >>> split_keyvaluepairs('a=4, b=a')
+    {'a': '4', 'b': 'a'}
+    >>> split_keyvaluepairs('a=4, b')
+    Traceback (most recent call last):
+      ...
+    ValueError: Invalid key=value pair: 'b'
+    >>> split_keyvaluepairs('a=4, a=a')
+    Traceback (most recent call last):
+      ...
+    ValueError: Duplicate key 'a'
+    """
+    data = {}
+    for pair in value.split(","):
+        pair = pair.strip()  # noqa: PLW2901
+        if "=" not in pair:
+            raise ValueError(f"Invalid key=value pair: '{pair}'")
+        fname, fvalue = pair.split("=", 1)
+        if fname not in data:
+            data[fname] = fvalue
+        else:
+            raise ValueError(f"Duplicate key {fname!r}")
+    return data

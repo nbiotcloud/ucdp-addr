@@ -7,6 +7,7 @@ from matchor import match
 
 from .addrmap import AddrMap
 from .addrmapref import AddrMapRef, RawAddrMapRef
+from .addrrange import AddrRange
 from .addrspace import Addrspace, Word
 
 _RE_RESOLVE = re.compile(
@@ -44,24 +45,34 @@ def resolve(addrmap: AddrMap, item: RawAddrMapRef) -> AddrMapRef:
     By string:
 
     >>> resolve(addrmap, "uart")
-    AddrMapRef(addrspace=Addrspace(name='uart', ...))
+    AddrMapRef(..., addrspace=Addrspace(name='uart', ...))
     >>> resolve(addrmap, "uart.ctrl")
-    AddrMapRef(addrspace=Addrspace(name='uart', ...), word=Word(name='ctrl', ...))
+    AddrMapRef(..., addrspace=Addrspace(name='uart', ...), word=Word(name='ctrl', ...))
     >>> resolve(addrmap, "uart.ctrl.ena")
-    AddrMapRef(addrspace=Addrspace(name='uart', ...), word=Word(name='ctrl', ...), field=Field(name='ena', ...))
+    AddrMapRef(..., addrspace=Addrspace(name='uart', ...), word=Word(name='ctrl', ...), field=Field(name='ena', ...))
 
     By reference:
 
     >>> ref = resolve(addrmap, "uart.ctrl.ena")
     >>> ref
-    AddrMapRef(addrspace=Addrspace(name='uart', ...), word=Word(name='ctrl', ...), field=Field(name='ena', ...))
+    AddrMapRef(..., addrspace=Addrspace(name='uart', ...), word=Word(name='ctrl', ...), field=Field(name='ena', ...))
     >>> resolve(addrmap, ref)
-    AddrMapRef(addrspace=Addrspace(name='uart', ...), word=Word(name='ctrl', ...), field=Field(name='ena', ...))
+    AddrMapRef(..., addrspace=Addrspace(name='uart', ...), word=Word(name='ctrl', ...), field=Field(name='ena', ...))
+
+    By address space:
+
+    >>> resolve(addrmap, Addrspace(baseaddr=0, width=32, depth=1))
+    AddrMapRef(..., addrspace=Addrspace(name='uart', size=Bytesize('4 bytes')))
+
+    By address range:
+
+    >>> resolve(addrmap, AddrRange(baseaddr=0, width=32, depth=1))
+    AddrMapRef(addrrange=AddrRange(size=Bytesize('4 bytes')))
 
     By address:
 
-    >>> resolve(addrmap, Addrspace(baseaddr=0, width=32, depth=1))
-    AddrMapRef(addrspace=Addrspace(name='uart', size=Bytesize('4 bytes')))
+    >>> resolve(addrmap, 8)
+    AddrMapRef(addrrange=AddrRange(baseaddr=Hex('0x8'), size=Bytesize('4 bytes')))
 
     Errors:
 
@@ -73,10 +84,10 @@ def resolve(addrmap: AddrMap, item: RawAddrMapRef) -> AddrMapRef:
     Traceback (most recent call last):
       ...
     ValueError: uart:ctrl does not match pattern 'addrspace[.word[.field]]'
-    >>> resolve(addrmap, 0)
+    >>> resolve(addrmap, 5.0)
     Traceback (most recent call last):
     ...
-    TypeError: 0
+    TypeError: 5.0
     >>> resolve(addrmap, Addrspace(baseaddr=0x1000, width=32, depth=1))
     Traceback (most recent call last):
       ...
@@ -114,8 +125,15 @@ def resolves(addrmap: AddrMap, item: RawAddrMapRef) -> Iterator[AddrMapRef]:
 
     elif isinstance(item, AddrMapRef):
         yield item
+
     elif isinstance(item, Addrspace):
         yield addrmap.get(item)
+
+    elif isinstance(item, AddrRange):
+        yield AddrMapRef(addrrange=item)
+
+    elif isinstance(item, int):
+        yield AddrMapRef(addrrange=AddrRange(baseaddr=item, size=4))
 
     else:
         raise TypeError(item)
@@ -136,14 +154,14 @@ def _resolve_pat(addrmap: AddrMap, pat: str) -> Iterator[AddrMapRef]:
                 for addrspace, word in addrspace_words:
                     for field in word.fields:
                         if match(field.name, fpat):
-                            yield AddrMapRef(addrspace=addrspace, word=word, field=field)
+                            yield AddrMapRef.create(addrspace=addrspace, word=word, field=field)
             else:
                 # 'addrspace.word'
                 for addrspace, word in addrspace_words:
-                    yield AddrMapRef(addrspace=addrspace, word=word)
+                    yield AddrMapRef.create(addrspace=addrspace, word=word)
         else:
             # 'addrspace'
             for addrspace in addrspaces:
-                yield AddrMapRef(addrspace=addrspace)
+                yield AddrMapRef.create(addrspace=addrspace)
     else:
         raise ValueError(f"{pat} does not match pattern 'addrspace[.word[.field]]'")

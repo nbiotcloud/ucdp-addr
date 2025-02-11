@@ -23,60 +23,78 @@
 #
 """Unified Chip Design Platform - Address Map."""
 
+from .access import (
+    ACCESSES,
+    Access,
+    ReadOp,
+    ToAccess,
+    WriteOp,
+    cast_access,
+    get_counteraccess,
+)
 from .addrdecoder import AddrDecoder
+from .addrinfo import AddrInfo
 from .addrmap import AddrMap, create_fill_addrspace
 from .addrmapfinder import Defines, GetAttrspacesFunc, get_addrmap, get_addrspaces
 from .addrmaster import AddrMaster
 from .addrmatrix import AddrMatrix
+from .addrrange import AddrRange
 from .addrref import AddrRef
 from .addrslave import AddrSlave
 from .addrspace import (
-    ACCESSES,
-    Access,
     Addrspace,
     DefaultAddrspace,
     Field,
-    ReadOp,
     ReservedAddrspace,
     Word,
-    WriteOp,
     create_fill_field,
     create_fill_word,
 )
 from .addrspacealias import AddrspaceAlias
 from .addrspaces import Addrspaces, join_addrspaces, zip_addrspaces
 from .const import NOREF
+from .data import DataType
+from .datainfo import DataInfo
 from .resolver import resolve
 from .util import calc_depth_size
+from .wordinfo import WordInfo
 
 __all__ = [
     "Access",
     "ACCESSES",
     "AddrDecoder",
+    "AddrInfo",
     "AddrMap",
     "AddrMaster",
     "AddrMatrix",
+    "AddrRange",
     "AddrRef",
     "AddrSlave",
     "Addrspace",
     "AddrspaceAlias",
     "Addrspaces",
     "calc_depth_size",
+    "cast_access",
     "create_fill_addrspace",
     "create_fill_field",
     "create_fill_word",
+    "DataInfo",
+    "DataType",
     "DefaultAddrspace",
     "Defines",
     "Field",
     "get_addrmap",
     "get_addrspaces",
+    "get_counteraccess",
     "GetAttrspacesFunc",
     "join_addrspaces",
     "NOREF",
     "ReadOp",
     "ReservedAddrspace",
     "resolve",
+    "ToAccess",
     "Word",
+    "WordInfo",
     "WriteOp",
     "zip_addrspaces",
 ]
