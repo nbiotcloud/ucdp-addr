@@ -35,7 +35,7 @@ classifiers = [
 ]
 requires-python = ">=3.10.0,<4.0"
 dependencies = [
-    "ucdp>=0.16.0",
+    "ucdp>=0.27.0",
     "ucdp-glbl>=1.1.1",
 ]
 
@@ -165,6 +165,8 @@ ignore = [
     'UP038',
     # Assert
     'S101',
+    # Type-Checking
+    'TCH001',
 ]
 [tool.ruff.lint.per-file-ignores]
 "test_*" = [

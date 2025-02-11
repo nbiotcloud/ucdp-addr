@@ -33,11 +33,12 @@ from typing import Any, Literal, Optional, TypeAlias
 
 import pydantic as pyd
 import ucdp as u
-from humannum import bytesize_
+from humannum import bytesize_, int_
 from icdutil import num
 from ucdp_glbl.attrs import CastableAttrs
 
-from .util import calc_depth_size
+from .access import Access, ToAccess, cast_access
+from .addrrange import AddrRange
 
 NamingScheme: TypeAlias = Literal["dec", "alpha"] | Callable[[int], str]
 
@@ -46,193 +47,6 @@ _ALPHA_PER_DIGIT = len(ascii_lowercase)
 
 class FullError(ValueError):
     """Full."""
-
-
-class ReadOp(u.IdentLightObject):
-    """
-    Read Operation.
-
-    NEXT = {data}DATA
-    """
-
-    data: Literal[None, 0, 1, "~"] = None
-    """Operation On Stored Data."""
-    once: bool = False
-    """Operation is just allowed once."""
-    title: str = u.Field(repr=False)
-    """Title."""
-    descr: str = u.Field(repr=False)
-    """Description."""
-
-
-_R = ReadOp(name="R", title="Read", descr="Read without Modification.")
-_RC = ReadOp(name="RC", data=0, title="Read-Clear", descr="Clear on Read.")
-_RS = ReadOp(name="RS", data=1, title="Read-Set", descr="Set on Read.")
-_RT = ReadOp(name="RT", data="~", title="Read-Toggle", descr="Toggle on Read.")
-_RP = ReadOp(name="RP", once=True, title="Read-Protected", descr="Data is hidden after first Read.")
-
-
-class WriteOp(u.IdentLightObject):
-    """
-    Write Operation.
-
-    NEXT = {data}DATA {op} {write}WRITE
-    """
-
-    data: Literal[None, "", "~"] = None
-    """Operation On Stored Data."""
-    op: Literal[None, 0, 1, "&", "|"] = None
-    """Operation On Stored and Incoming Data."""
-    write: Literal[None, "", "~"] = None
-    """Operation On Incoming Data."""
-    once: bool = False
-    """Operation is just allowed once."""
-    title: str = u.Field(repr=False)
-    """Title."""
-    descr: str = u.Field(repr=False)
-    """Description."""
-
-
-_W = WriteOp(name="W", write="", title="Write", descr="Write Data.")
-_W0C = WriteOp(name="W0C", data="", op="&", write="", title="Write-Zero-Clear", descr="Clear On Write Zero.")
-_W0S = WriteOp(name="W0S", data="", op="|", write="~", title="Write-Zero-Set", descr="Set On Write Zero.")
-_W1C = WriteOp(name="W1C", data="", op="&", write="~", title="Write-One-Clear", descr="Clear on Write One.")
-_W1S = WriteOp(name="W1S", data="", op="|", write="", title="Write-One-Set", descr="Set on Write One.")
-_WL = WriteOp(name="WL", write="", once=True, title="Write Locked", descr="Write Data once and Lock.")
-
-
-class Access(u.IdentLightObject):
-    """Access."""
-
-    read: ReadOp | None = None
-    write: WriteOp | None = None
-
-    @property
-    def title(self):
-        """Title."""
-        readtitle = self.read and self.read.title
-        writetitle = self.write and self.write.title
-        if readtitle and writetitle:
-            return f"{readtitle}/{writetitle}"
-        return readtitle or writetitle
-
-    @property
-    def descr(self):
-        """Description."""
-        readdescr = self.read and self.read.descr
-        writedescr = self.write and self.write.descr
-        if readdescr and writedescr:
-            return f"{readdescr} {writedescr}"
-        return readdescr or writedescr
-
-    def __str__(self):
-        return self.name
-
-    def __repr__(self):
-        return self.name
-
-
-NA = Access(name="NA")
-
-RO = Access(name="RO", read=_R)
-RC = Access(name="RC", read=_RC)
-RS = Access(name="RS", read=_RS)
-RT = Access(name="RT", read=_RT)
-RP = Access(name="RP", read=_RP)
-
-WO = Access(name="WO", write=_W)
-W0C = Access(name="W0C", write=_W0C)
-W0S = Access(name="W0S", write=_W0S)
-W1C = Access(name="W1C", write=_W1C)
-W1S = Access(name="W1S", write=_W1S)
-WL = Access(name="WL", write=_WL)
-
-RW = Access(name="RW", read=_R, write=_W)
-RW0C = Access(name="RW0C", read=_R, write=_W0C)
-RW0S = Access(name="RW0S", read=_R, write=_W0S)
-RW1C = Access(name="RW1C", read=_R, write=_W1C)
-RW1S = Access(name="RW1S", read=_R, write=_W1S)
-RWL = Access(name="RWL", read=_R, write=_WL)
-
-
-ACCESSES = u.Namespace(
-    (
-        RO,
-        RC,
-        RS,
-        RT,
-        RP,
-        WO,
-        W0C,
-        W0S,
-        W1C,
-        W1S,
-        WL,
-        RW,
-        RW0C,
-        RW0S,
-        RW1C,
-        RW1S,
-        RWL,
-    )
-)
-ACCESSES.lock()
-
-_COUNTERACCESS = {
-    None: RO,
-    RO: RW,
-    # RC: ,
-    # RS: ,
-    # RI: ,
-    WO: RO,
-    # W1C: ,
-    # W1S: ,
-    RW: RO,
-    # RW1C: ,
-    # RW1S: ,
-    # RCW: ,
-    # RCW1C: ,
-    # RCW1S: ,
-    # RSW: ,
-    # RSW1C: ,
-    # RSW1S: ,
-    # RIW: ,
-    # RIW1C: ,
-    # RIW1S: ,
-}
-
-
-def cast_access(value: str | Access) -> Access:
-    """
-    Cast Access.
-
-    Usage:
-
-        >>> from ucdp_addr import addrspace
-        >>> access = addrspace.cast_access("RO")
-        >>> access
-        RO
-        >>> cast_access(access)
-        RO
-    """
-    if isinstance(value, Access):
-        return value
-    return ACCESSES[value]
-
-
-def get_counteraccess(access: Access) -> Access | None:
-    """
-    Get Counter Access.
-
-    Usage:
-
-        >>> from ucdp_addr import addrspace
-        >>> str(addrspace.get_counteraccess(addrspace.RO))
-        'RW'
-        >>> str(addrspace.get_counteraccess(addrspace.RW))
-        'RO'
-    """
-    return _COUNTERACCESS.get(access, None)
 
 
 class Field(u.IdentLightObject):
@@ -455,17 +269,11 @@ class Words(u.Object):
             self._add_field(*args, **kwargs)
 
 
-class Addrspace(u.IdentObject):
+class Addrspace(AddrRange, u.IdentObject):
     """Address Space."""
 
-    baseaddr: u.Hex = 0
-    """Base Address"""
-    width: int = 32
-    """Width in Bits."""
-    depth: int = u.Field(repr=False)
-    """Number of words."""
-    size: u.Bytes
-    """Size in Bytes."""
+    name: str = ""
+    """Name."""
     is_sub: bool = True
     """Address Decoder Just Compares `addrwidth` LSBs."""
     words: u.Namespace = u.Field(default_factory=u.Namespace, repr=False)
@@ -476,45 +284,9 @@ class Addrspace(u.IdentObject):
     add_words_naming: NamingScheme = "dec"
     """Naming Scheme for words created by `add_words`."""
 
-    bus: Access | None = None
-    core: Access | None = None
+    bus: ToAccess | None = None
+    core: ToAccess | None = None
     is_volatile: bool | None = None
-
-    def __init__(
-        self,
-        width: int = 32,
-        depth: int | None = None,
-        size: u.Bytes | None = None,
-        bus: Access | str | None = None,
-        core: Access | str | None = None,
-        **kwargs,
-    ):
-        depth, size = calc_depth_size(width, depth, size)
-        if bus is not None:
-            bus = cast_access(bus)
-        if core is not None:
-            core = cast_access(core)
-        super().__init__(width=width, depth=depth, size=size, bus=bus, core=core, **kwargs)
-
-    @property
-    def addrwidth(self) -> int:
-        """Address Width."""
-        return num.calc_unsigned_width(int(self.size) - 1)
-
-    @property
-    def endaddr(self) -> u.Hex:
-        """End Address - `baseaddr+size-1`."""
-        return self.baseaddr + self.size - 1
-
-    @property
-    def nextaddr(self) -> u.Hex:
-        """Next Free Address - `baseaddr+size`."""
-        return self.baseaddr + self.size
-
-    @property
-    def wordsize(self) -> float:
-        """Number of Bytes Per Word."""
-        return self.width / 8
 
     @property
     def size_used(self) -> u.Bytes:
@@ -529,13 +301,11 @@ class Addrspace(u.IdentObject):
         return 0
 
     @property
-    def org(self) -> str:
-        """Organization."""
-        return f"{self.depth}x{self.width} ({self.size})"
-
-    @property
     def info(self) -> str:
         """Info."""
+        return str(self)
+
+    def __str__(self) -> str:
         baseaddr = f"+{self.baseaddr}" if self.is_sub else f"{self.baseaddr}"
         return f"{self.name} {baseaddr} {self.depth}x{self.width}"
 
@@ -884,3 +654,61 @@ class DefaultAddrspace(Addrspace):
     """Default Address Space."""
 
     name: str = u.Field(init=False, default="")
+
+
+def resolve_field_value(field: Field, value: int | str) -> int:
+    """Resolve Enumeration If necessary."""
+    type_ = field.type_
+    if value == "<RST>":
+        return field.type_.default
+    if not isinstance(type_, u.BaseEnumType) or not isinstance(value, str):
+        return int_(value)[0]
+    for item in type_.values():
+        if item.value == value:
+            return item.key
+    raise ValueError(f"Value {value!r} is not covered by {type_}")
+
+
+def get_mask(word: Word, filter_=None) -> u.Hex:
+    """
+    Return mask for all fields of one word.
+
+    >>> import ucdp_addr as ua
+    >>> word = ua.Word(name='word', offset=0, width=32)
+    >>> field = word.add_field('field0', u.UintType(3), ua.access.RO)
+    >>> field = word.add_field('field1', u.UintType(6), ua.access.WO, align=4)
+    >>> field = word.add_field('field2', u.UintType(3), ua.access.RW, align=4)
+
+    >>> get_mask(word)
+    Hex('0x000073F7')
+    >>> get_mask(word, filter_=lambda field: field.bus.read)
+    Hex('0x00007007')
+    >>> get_mask(word, filter_=lambda field: field.bus.write)
+    Hex('0x000073F0')
+    >>> get_mask(word, filter_=lambda field: field.bus.read and field.bus.write)
+    Hex('0x00007000')
+    """
+    fields = word.fields
+    if filter_:
+        fields = [field for field in fields if filter_(field)]
+    mask = sum([field.slice.mask for field in fields])
+    return u.Hex(mask, width=word.width)
+
+
+def read_on_modify(word: Word, mask: int) -> bool:
+    """
+    Return `True` if a read is needed in read-modify-write operations on word `word` with `mask`.
+
+    >>> import ucdp_addr as ua
+    >>> word = ua.Word(name='word', offset=0, width=32)
+    >>> field = word.add_field('field0', u.UintType(3), ua.access.RO)
+    >>> field = word.add_field('field1', u.UintType(6), ua.access.WO, align=4)
+    >>> field = word.add_field('field2', u.UintType(3), ua.access.RW, align=4)
+
+    >>> read_on_modify(word, 0x00007000)
+    False
+    >>> read_on_modify(word, 0x00003000)
+    True
+    """
+    rwmask = get_mask(word, lambda field: field.bus.read and field.bus.write)
+    return bool(rwmask) and rwmask != mask

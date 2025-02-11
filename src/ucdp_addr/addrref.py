@@ -31,3 +31,4 @@ from typing import TypeAlias
 import ucdp as u
 
 AddrRef: TypeAlias = u.Object | str
+"""Addressed Reference."""

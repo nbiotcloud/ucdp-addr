@@ -134,15 +134,15 @@ def test_growing(tmp_path, one, two, three, four, alias):
 
     with (tmp_path / "iter-fillfunc.txt").open("w") as file:
         for item in addrmap.iter(fill=create_fill_addrspace):
-            file.write(f"{item}\n")
+            file.write(f"{item!r}\n")
 
     with (tmp_path / "iter-filltrue.txt").open("w") as file:
         for item in addrmap.iter(fill=True):
-            file.write(f"{item}\n")
+            file.write(f"{item!r}\n")
 
     with (tmp_path / "iter-fill-filter.txt").open("w") as file:
         for item in addrmap.iter(fill=True, filter_=lambda addrspace: addrspace.name != "two"):
-            file.write(f"{item}\n")
+            file.write(f"{item!r}\n")
 
     (tmp_path / "overview.txt").write_text(addrmap.get_overview())
     assert_refdata(test_growing, tmp_path)
