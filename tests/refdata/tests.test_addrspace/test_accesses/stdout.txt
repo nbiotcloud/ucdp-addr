@@ -1,13 +1,23 @@
-RO
-    access.read=ReadOp(name='R')
+NA
+    access.read=None
     access.write=None
-    access.title='Read'
-    access.descr='Read without Modification.'
+    access.title=None
+    access.descr=None
 RC
     access.read=ReadOp(name='RC', data=0)
     access.write=None
     access.title='Read-Clear'
     access.descr='Clear on Read.'
+RO
+    access.read=ReadOp(name='R')
+    access.write=None
+    access.title='Read'
+    access.descr='Read without Modification.'
+RP
+    access.read=ReadOp(name='RP', once=True)
+    access.write=None
+    access.title='Read-Protected'
+    access.descr='Data is hidden after first Read.'
 RS
     access.read=ReadOp(name='RS', data=1)
     access.write=None
@@ -18,41 +28,6 @@ RT
     access.write=None
     access.title='Read-Toggle'
     access.descr='Toggle on Read.'
-RP
-    access.read=ReadOp(name='RP', once=True)
-    access.write=None
-    access.title='Read-Protected'
-    access.descr='Data is hidden after first Read.'
-WO
-    access.read=None
-    access.write=WriteOp(name='W', write='')
-    access.title='Write'
-    access.descr='Write Data.'
-W0C
-    access.read=None
-    access.write=WriteOp(name='W0C', data='', op='&', write='')
-    access.title='Write-Zero-Clear'
-    access.descr='Clear On Write Zero.'
-W0S
-    access.read=None
-    access.write=WriteOp(name='W0S', data='', op='|', write='~')
-    access.title='Write-Zero-Set'
-    access.descr='Set On Write Zero.'
-W1C
-    access.read=None
-    access.write=WriteOp(name='W1C', data='', op='&', write='~')
-    access.title='Write-One-Clear'
-    access.descr='Clear on Write One.'
-W1S
-    access.read=None
-    access.write=WriteOp(name='W1S', data='', op='|', write='')
-    access.title='Write-One-Set'
-    access.descr='Set on Write One.'
-WL
-    access.read=None
-    access.write=WriteOp(name='WL', write='', once=True)
-    access.title='Write Locked'
-    access.descr='Write Data once and Lock.'
 RW
     access.read=ReadOp(name='R')
     access.write=WriteOp(name='W', write='')
@@ -83,3 +58,33 @@ RWL
     access.write=WriteOp(name='WL', write='', once=True)
     access.title='Read/Write Locked'
     access.descr='Read without Modification. Write Data once and Lock.'
+W0C
+    access.read=None
+    access.write=WriteOp(name='W0C', data='', op='&', write='')
+    access.title='Write-Zero-Clear'
+    access.descr='Clear On Write Zero.'
+W0S
+    access.read=None
+    access.write=WriteOp(name='W0S', data='', op='|', write='~')
+    access.title='Write-Zero-Set'
+    access.descr='Set On Write Zero.'
+W1C
+    access.read=None
+    access.write=WriteOp(name='W1C', data='', op='&', write='~')
+    access.title='Write-One-Clear'
+    access.descr='Clear on Write One.'
+W1S
+    access.read=None
+    access.write=WriteOp(name='W1S', data='', op='|', write='')
+    access.title='Write-One-Set'
+    access.descr='Set on Write One.'
+WL
+    access.read=None
+    access.write=WriteOp(name='WL', write='', once=True)
+    access.title='Write Locked'
+    access.descr='Write Data once and Lock.'
+WO
+    access.read=None
+    access.write=WriteOp(name='W', write='')
+    access.title='Write'
+    access.descr='Write Data.'
