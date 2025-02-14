@@ -12,7 +12,7 @@ from pydantic import PositiveInt
 from .access import is_read_repeatable, is_write_repeatable
 from .addrinfo import _apply_offset
 from .addrmap import AddrMap
-from .addrmapref import AddrMapRef, RawAddrMapRef
+from .addrmapref import AddrMapRef, ToAddrMapRef
 from .addrrange import AddrRange
 from .addrspace import Word, read_on_modify, resolve_field_value
 from .data import Data, DataType, get_datatype, get_size
@@ -61,7 +61,7 @@ class WordInfo(u.Object):
     @staticmethod
     def create(
         addrmap: AddrMap,
-        item: RawAddrMapRef,
+        item: ToAddrMapRef,
         data: Data | str | FieldValues,
         offset: Offset | None = None,
         mask: int | None = None,
@@ -135,6 +135,11 @@ class WordInfo(u.Object):
     def iter(self) -> Iterator[AddrData]:
         """Iteratate over single address value pairs according to access."""
         yield from _iter_data(self.datatype, self.data, self.addrrange)
+
+    def addrs(self) -> Iterator[int]:
+        """Addresses."""
+        for addr, _ in _iter_data(self.datatype, self.data, self.addrrange):
+            yield addr
 
 
 def _strip_size(data: Data, datatype: DataType, addrrange: AddrRange) -> AddrRange:

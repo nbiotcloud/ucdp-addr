@@ -60,5 +60,8 @@ class AddrMapRef(u.Object):
         return AddrMapRef(addrrange=addrrange, addrspace=addrspace, word=word, field=field)
 
 
-RawAddrMapRef: TypeAlias = AddrMapRef | AddrRange | Addrspace | str | int
+ToAddrMapRef: TypeAlias = AddrMapRef | AddrRange | Addrspace | str | int
 """Unresolved Address Map Reference."""
+
+RawAddrMapRef = ToAddrMapRef
+"""Obsolete Alias."""

@@ -6,7 +6,7 @@ from collections.abc import Iterator
 from matchor import match
 
 from .addrmap import AddrMap
-from .addrmapref import AddrMapRef, RawAddrMapRef
+from .addrmapref import AddrMapRef, ToAddrMapRef
 from .addrrange import AddrRange
 from .addrspace import Addrspace, Word
 
@@ -17,7 +17,7 @@ _RE_RESOLVE = re.compile(
 )
 
 
-def resolve(addrmap: AddrMap, item: RawAddrMapRef) -> AddrMapRef:
+def resolve(addrmap: AddrMap, item: ToAddrMapRef) -> AddrMapRef:
     """
     Retrieve AddrSpace, Word and Field referenced by `item` from `addrmap`.
 
@@ -99,7 +99,7 @@ def resolve(addrmap: AddrMap, item: RawAddrMapRef) -> AddrMapRef:
         raise ValueError(f"{item!r} does not exists") from None
 
 
-def resolves(addrmap: AddrMap, item: RawAddrMapRef) -> Iterator[AddrMapRef]:
+def resolves(addrmap: AddrMap, item: ToAddrMapRef) -> Iterator[AddrMapRef]:
     """
     Same as `resolve` but returns all matches.
 

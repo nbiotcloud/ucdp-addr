@@ -83,10 +83,12 @@ def test_addrrange(addrmap):
     wordinfo = ua.WordInfo.create(addrmap, item, (5, 6))
     assert str(wordinfo) == "0x20 [0x20 2x32 (8 bytes)] BURST: (5, 6)"
     assert str(tuple(wordinfo.iter())) == "((Hex('0x20'), 5), (Hex('0x24'), 6))"
+    assert str(tuple(wordinfo.addrs())) == "(Hex('0x20'), Hex('0x24'))"
 
     wordinfo = ua.WordInfo.create(addrmap, item, ((8, 5), (16, 6)))
     assert str(wordinfo) == "0x20 [0x20 5x32 (20 bytes)] SCAT: ((8, 5), (16, 6))"
     assert str(tuple(wordinfo.iter())) == "((Hex('0x28'), 5), (Hex('0x30'), 6))"
+    assert str(tuple(wordinfo.addrs())) == "(Hex('0x28'), Hex('0x30'))"
 
     wordinfo = ua.WordInfo.create(addrmap, item, 5, mask=0xF, offset=8)
     assert str(wordinfo) == "0x20 [0x28 1x32 (4 bytes)] mask=0xF SINGLE: 5"
