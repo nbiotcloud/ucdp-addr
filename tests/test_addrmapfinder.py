@@ -37,7 +37,7 @@ def test_find_top(tmp_path, testdata_path):
     mod = u.load("top_lib.top.TopMod").mod
     addrmap = get_addrmap(mod)
 
-    (tmp_path / "overview.txt").write_text(addrmap.get_overview())
+    (tmp_path / "overview.md").write_text(addrmap.get_overview())
     assert_refdata(test_find_top, tmp_path)
 
 

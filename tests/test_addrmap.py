@@ -95,7 +95,7 @@ def test_empty(tmp_path):
     assert addrmap.lastaddr is None
     assert addrmap.addrslice is None
 
-    (tmp_path / "overview.txt").write_text(addrmap.get_overview())
+    (tmp_path / "overview.md").write_text(addrmap.get_overview())
     assert_refdata(test_empty, tmp_path)
 
 
@@ -144,7 +144,7 @@ def test_growing(tmp_path, one, two, three, four, alias):
         for item in addrmap.iter(fill=True, filter_=lambda addrspace: addrspace.name != "two"):
             file.write(f"{item!r}\n")
 
-    (tmp_path / "overview.txt").write_text(addrmap.get_overview())
+    (tmp_path / "overview.md").write_text(addrmap.get_overview())
     assert_refdata(test_growing, tmp_path)
 
 
@@ -186,7 +186,7 @@ def test_fixed_size(tmp_path, one, two, three, alias):
 
     assert tuple(addrmap) == (one, two, alias)
 
-    (tmp_path / "overview.txt").write_text(addrmap.get_overview())
+    (tmp_path / "overview.md").write_text(addrmap.get_overview())
     assert_refdata(test_fixed_size, tmp_path)
 
 
@@ -205,7 +205,7 @@ def test_unique(tmp_path, one, two, three, four, five):
     with raises(ValueError, match=re.escape(msg)):
         addrmap.add(five)
 
-    (tmp_path / "overview.txt").write_text(addrmap.get_overview())
+    (tmp_path / "overview.md").write_text(addrmap.get_overview())
     assert_refdata(test_unique, tmp_path)
 
 
@@ -217,7 +217,7 @@ def test_corner(tmp_path, zero, one):
     addrmap.add(one)
     assert addrmap.addrslice.bits == "12"
 
-    (tmp_path / "overview.txt").write_text(addrmap.get_overview())
+    (tmp_path / "overview.md").write_text(addrmap.get_overview())
     assert_refdata(test_corner, tmp_path)
 
 

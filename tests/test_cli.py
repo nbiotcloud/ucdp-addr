@@ -38,7 +38,7 @@ def runner():
 def _run(runner, path, cmd):
     result = runner.invoke(u.cli.ucdp, cmd)
     assert result.exit_code == 0
-    (path / "console.txt").write_text(result.output)
+    (path / "console.md").write_text(result.output)
 
 
 def test_lsaddrmap(runner, tmp_path, testdata_path):
@@ -55,7 +55,7 @@ def test_lsaddrmap_full(runner, tmp_path, testdata_path):
 
 def test_lsaddrmap_full_file(runner, tmp_path, testdata_path):
     """Lsaddrmap Command."""
-    filepath = tmp_path / "file.txt"
+    filepath = tmp_path / "file.md"
     _run(runner, tmp_path, ["lsaddrmap", "top_lib.top", "--full", "--file", str(filepath)])
     assert_refdata(test_lsaddrmap_full_file, tmp_path)
 

@@ -252,9 +252,9 @@ class AddrMap(u.Object):
 
         defines = ", ".join(f"{define}={value!r}" for define, value in self.defines.items()) or None
         header = [
-            f"Top:     {self.ref}",
-            f"Defines: {defines}",
-            f"Size:    {self.size}",
+            f"* Top:     `{self.ref}`",
+            f"* Defines: `{defines}`",
+            f"* Size:    `{self.size}`",
         ]
         parts = [
             "\n".join(header),
@@ -279,8 +279,8 @@ class AddrMap(u.Object):
             yield (
                 addrspace.name,
                 classname,
-                addrspace.base,
-                addrspace.org,
+                f"`{addrspace.base}`",
+                f"`{addrspace.org}`",
                 ",".join(infos),
                 format_attrs(addrspace.attrs),
             )
@@ -301,7 +301,7 @@ class AddrMap(u.Object):
                     addrspace.name,
                     "",
                     "",
-                    addrspace.base,
+                    f"`{addrspace.base}`",
                     addrspace.access,
                     "",
                     ",".join(infos),
@@ -317,7 +317,7 @@ class AddrMap(u.Object):
                         addrspace.name,
                         word.name,
                         "",
-                        f"  +{word.slice}",
+                        f"`  +{word.slice}`",
                         word.access,
                         "",
                         ",".join(infos),
@@ -331,13 +331,14 @@ class AddrMap(u.Object):
                             infos.append("Volatile")
                         if field.is_const:
                             infos.append("CONST")
+                        reset = resolver.resolve_value(field.type_)
                         yield (
                             addrspace.name,
                             word.name,
                             field.name,
-                            f"    [{field.slice}]",
+                            f"`    [{field.slice}]`",
                             str(field.access),
-                            resolver.resolve_value(field.type_),
+                            f"`{reset}`",
                             ",".join(infos),
                             format_attrs(field.attrs),
                         )

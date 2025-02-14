@@ -90,8 +90,8 @@ def test_basic(tmp_path, caplog):
 
     resolved = AddrMap.from_addrspaces(decoder.get_addrspaces())
 
-    (tmp_path / "addrmap.txt").write_text(decoder.addrmap.get_overview())
-    (tmp_path / "resolved.txt").write_text(resolved.get_overview())
+    (tmp_path / "addrmap.md").write_text(decoder.addrmap.get_overview())
+    (tmp_path / "resolved.md").write_text(resolved.get_overview())
     assert_refdata(test_basic, tmp_path, caplog=caplog)
 
 

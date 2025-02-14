@@ -34,7 +34,7 @@ def test_basic(tmp_path, caplog):
     assert tuple(matrix.masters) == ()
     assert tuple(matrix.slaves) == ()
 
-    (tmp_path / "overview.txt").write_text(matrix.get_overview())
+    (tmp_path / "overview.md").write_text(matrix.get_overview())
     matrix._check_masters_slaves()
     assert_refdata(test_basic, tmp_path, caplog=caplog)
 
@@ -62,7 +62,7 @@ def test_example(tmp_path, caplog):
     assert tuple(matrix.masters) == (mext, mdsp)
     assert tuple(matrix.slaves) == (sram, speriph, smisc)
 
-    (tmp_path / "overview.txt").write_text(matrix.get_overview())
+    (tmp_path / "overview.md").write_text(matrix.get_overview())
     matrix._check_masters_slaves()
     assert_refdata(test_example, tmp_path, caplog=caplog)
 
@@ -74,6 +74,6 @@ def test_corner(tmp_path, caplog):
     matrix._add_slave(AddrSlave(name="slv", addrdecoder=matrix))
     matrix.add_interconnects("foo", "bar")
 
-    (tmp_path / "overview.txt").write_text(matrix.get_overview())
+    (tmp_path / "overview.md").write_text(matrix.get_overview())
     matrix._check_masters_slaves()
     assert_refdata(test_corner, tmp_path, caplog=caplog)
