@@ -12,10 +12,10 @@
 #
 # The above copyright notice and this permission notice shall be included in all
 # copies or substantial portions of the Software.
-#
+# 1
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. @IN NO EVENT SHALL THE
 # AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
@@ -29,6 +29,7 @@ Address Map Finder.
 from collections.abc import Callable
 
 import ucdp as u
+from ucdp_glbl.finder import find
 
 from .addrmap import AddrMap, Defines
 from .addrspaces import Addrspaces
@@ -55,29 +56,4 @@ def get_addrspaces(mod: u.BaseMod, defines: Defines | None = None) -> Addrspaces
 
 
 def _find_get_addrspaces(mods: list[u.BaseMod]) -> GetAttrspacesFunc:
-    funcs: list[GetAttrspacesFunc] = []
-    funcmods: list[u.BaseMod] = []
-    while mods and not funcs:
-        subinsts = []
-        # Search for 'get_addrspaces' on all modules.
-        for mod in mods:
-            subinsts.extend(mod.insts)
-            func = getattr(mod, "get_addrspaces", None)
-            if func:
-                funcs.append(func)
-                funcmods.append(mod)
-        # None of the modules had a 'get_addrspaces' function. So continue on next level
-        if funcs:
-            break
-        mods = subinsts
-
-    if not funcs:
-        raise ValueError("No module found which implements 'get_addrspaces'")
-
-    if len(funcs) == 1:
-        return funcs[0]
-
-    lines = ["Multiple modules implement 'get_addrspaces':"]
-    lines += [f"  {mod!r}" for mod in funcmods]
-    lines.append("Implement 'get_addrspaces' on a parent module or choose a different top.")
-    raise ValueError("\n".join(lines))
+    return find(mods, "get_addrspaces")[1]
