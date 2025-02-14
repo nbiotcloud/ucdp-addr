@@ -1,11 +1,11 @@
- Master > Slave    slv
-----------------  -----
-      mst
+| Master > Slave |
+| -------------- |
 
 
-Top:     None
-Defines: None
-Size:    None
+
+* Top:     `None`
+* Defines: `None`
+* Size:    `None`
 
 | Addrspace | Type | Base | Size | Infos | Attributes |
 | --------- | ---- | ---- | ---- | ----- | ---------- |

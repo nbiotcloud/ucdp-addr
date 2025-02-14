@@ -29,8 +29,8 @@ Master-Slave Matrix.
 from collections import defaultdict
 from logging import getLogger
 
+import aligntext
 import ucdp as u
-from tabulate import tabulate
 
 from .addrdecoder import AddrDecoder
 from .addrmaster import AddrMaster
@@ -136,14 +136,21 @@ class AddrMatrix(AddrDecoder):
         return "\n\n\n".join(overview)
 
     def _get_overview_matrix(self) -> str:
+        def align(data) -> str:
+            lines = list(data)
+            lens = (max(len(cell) for cell in row) for row in zip(*lines, strict=False))
+            lines.insert(1, ("-" * len_ for len_ in lens))
+            return aligntext.align(lines, seps=(" | ",), sepfirst="| ", seplast=" |") + "\n"
+
         slaves = self.slaves
         headers = ["Master > Slave"] + [slave.name for slave in slaves]
+        matrix = [headers]
         idxmap = {slave.name: idx for idx, slave in enumerate(slaves, 1)}
         empty = ["" for slave in slaves]
-        matrix = []
         for master, slaves in self.master_slaves:
             item = [master.name, *empty]
             for slave in slaves:
                 item[idxmap[slave.name]] = "X"
             matrix.append(item)
-        return tabulate(matrix, headers=headers, stralign="center")
+
+        return align(matrix)

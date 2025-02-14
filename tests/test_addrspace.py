@@ -245,7 +245,7 @@ def test_lock():
 
 def test_volatile(tmp_path):
     """Test Volatile."""
-    overview_file = tmp_path / "overview.txt"
+    overview_file = tmp_path / "overview.md"
     with overview_file.open("w", encoding="utf-8") as file:
         for bus in (None, *ACCESSES):
             for core in (None, *ACCESSES):
