@@ -122,47 +122,45 @@ class Access(u.IdentLightObject):
 
 
 NA = Access(name="NA")
-
-RO = Access(name="RO", read=_R)
 RC = Access(name="RC", read=_RC)
+RO = Access(name="RO", read=_R)
+RP = Access(name="RP", read=_RP)
 RS = Access(name="RS", read=_RS)
 RT = Access(name="RT", read=_RT)
-RP = Access(name="RP", read=_RP)
-
-WO = Access(name="WO", write=_W)
-W0C = Access(name="W0C", write=_W0C)
-W0S = Access(name="W0S", write=_W0S)
-W1C = Access(name="W1C", write=_W1C)
-W1S = Access(name="W1S", write=_W1S)
-WL = Access(name="WL", write=_WL)
-
 RW = Access(name="RW", read=_R, write=_W)
 RW0C = Access(name="RW0C", read=_R, write=_W0C)
 RW0S = Access(name="RW0S", read=_R, write=_W0S)
 RW1C = Access(name="RW1C", read=_R, write=_W1C)
 RW1S = Access(name="RW1S", read=_R, write=_W1S)
 RWL = Access(name="RWL", read=_R, write=_WL)
+W0C = Access(name="W0C", write=_W0C)
+W0S = Access(name="W0S", write=_W0S)
+W1C = Access(name="W1C", write=_W1C)
+W1S = Access(name="W1S", write=_W1S)
+WL = Access(name="WL", write=_WL)
+WO = Access(name="WO", write=_W)
 
 
 ACCESSES = u.Namespace(
     (
-        RO,
+        NA,
         RC,
+        RO,
+        RP,
         RS,
         RT,
-        RP,
-        WO,
-        W0C,
-        W0S,
-        W1C,
-        W1S,
-        WL,
         RW,
         RW0C,
         RW0S,
         RW1C,
         RW1S,
         RWL,
+        W0C,
+        W0S,
+        W1C,
+        W1S,
+        WL,
+        WO,
     )
 )
 ACCESSES.lock()
