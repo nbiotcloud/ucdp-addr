@@ -13,7 +13,7 @@ import ucdp as u
 from pydantic import PositiveInt
 
 from .addrmap import AddrMap
-from .addrmapref import AddrMapRef, RawAddrMapRef
+from .addrmapref import AddrMapRef, ToAddrMapRef
 from .addrrange import AddrRange
 from .resolver import resolve
 
@@ -35,7 +35,7 @@ class AddrInfo(u.Object):
         return info
 
     @staticmethod
-    def create(addrmap: AddrMap, item: RawAddrMapRef, offset: int | None = None, mask: int | None = None) -> "AddrInfo":
+    def create(addrmap: AddrMap, item: ToAddrMapRef, offset: int | None = None, mask: int | None = None) -> "AddrInfo":
         """
         Create `AddrInfo`.
 
