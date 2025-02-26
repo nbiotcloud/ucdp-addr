@@ -146,8 +146,8 @@ def test_word(addrmap):
     wordinfo = ua.WordInfo.create(addrmap, "spi.wl", "bit=1")
     assert str(wordinfo) == "spi.wl [0x2C 1x32 (4 bytes)] mask=0x1 !W SINGLE: 1"
 
-    with raises(ValueError, match=re.escape("Value '1' is not covered by EnaType()")):
-        ua.WordInfo.create(addrmap, "spi.ctrl", "ena=1")
+    with raises(ValueError, match=re.escape("Value 'disenabled' is not covered by EnaType()")):
+        ua.WordInfo.create(addrmap, "spi.ctrl", "ena=disenabled")
 
     wordinfo = ua.WordInfo.create(addrmap, "spi.ctrl", {"ena": 1})
     assert str(wordinfo) == "spi.ctrl [0x20 1x32 (4 bytes)] mask=0x1 RMW SINGLE: 1"
