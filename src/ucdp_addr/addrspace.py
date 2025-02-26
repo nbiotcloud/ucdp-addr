@@ -666,6 +666,11 @@ def resolve_field_value(field: Field, value: int | str) -> int:
     for item in type_.values():
         if item.value == value:
             return item.key
+    # value is a string but not an enum value, so we need to check if
+    # it is castable to int, might be an int, bit oder hex string
+    if isinstance(value, str):
+        val, _ = int_(value)
+        return val
     raise ValueError(f"Value {value!r} is not covered by {type_}")
 
 
