@@ -667,7 +667,7 @@ def resolve_field_value(field: Field, value: int | str) -> int:
         if item.value == value:
             return item.key
     # value is a string but not an enum value, so we need to check if
-    # it is castable to int, might be an int, bit oder hex string
+    # it is castable to int, might be an int, bit or hex string
     if isinstance(value, str):
         try:
             val, _ = int_(value)
