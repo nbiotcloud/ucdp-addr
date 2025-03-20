@@ -526,6 +526,37 @@ def test_default_addrspace():
     assert default.attrs == (Attr("one"),)
 
 
+ATTRS = (
+    "one=two; foo=bar",
+    {"one": "two", "foo": "bar"},
+    (Attr(name="one", value="two"), Attr(name="foo", value="bar")),
+)
+
+
+@mark.parametrize("attrs", ATTRS)
+def test_addrspace_attrs(attrs):
+    """Test Attrs."""
+    addrspace = Addrspace(size="4kb", attrs=attrs)
+    assert addrspace.attrs == (Attr("one", value="two"), Attr(name="foo", value="bar"))
+
+
+@mark.parametrize("attrs", ATTRS)
+def test_word_attrs(attrs):
+    """Test Attrs."""
+    addrspace = Addrspace(size="4kb")
+    word = addrspace.add_word(name="name", attrs=attrs)
+    assert word.attrs == (Attr("one", value="two"), Attr(name="foo", value="bar"))
+
+
+@mark.parametrize("attrs", ATTRS)
+def test_field_attrs(attrs):
+    """Test Attrs."""
+    addrspace = Addrspace(size="4kb")
+    word = addrspace.add_word(name="name")
+    field = word.add_field("field", u.UintType(4), attrs=attrs)
+    assert field.attrs == (Attr("one", value="two"), Attr(name="foo", value="bar"))
+
+
 def test_add_words(tmp_path):
     """Iterate with field filling."""
     addrspace = Addrspace(name="module", width=32, depth=128)
