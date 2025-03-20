@@ -35,7 +35,7 @@ import pydantic as pyd
 import ucdp as u
 from humannum import bytesize_, int_
 from icdutil import num
-from ucdp_glbl.attrs import CastableAttrs
+from ucdp_glbl.attrs import CastableAttrs, cast_attrs
 
 from .access import Access, ToAccess, cast_access
 from .addrrange import AddrRange
@@ -120,6 +120,7 @@ class Word(u.IdentObject):
         title: str | None = None,
         descr: str | None = None,
         comment: str | None = None,
+        attrs: CastableAttrs | None = None,
         **kwargs,
     ) -> Field:
         """Add field."""
@@ -149,6 +150,7 @@ class Word(u.IdentObject):
             offset=offset,
             is_volatile=is_volatile,
             doc=doc,
+            attrs=cast_attrs(attrs),
             **kwargs,
         )
         if field.slice.left >= self.width:
