@@ -10,3 +10,4 @@ report.xml
 site/
 .hypothesis
 .test2ref
+*.egg-info
