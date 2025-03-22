@@ -1,7 +1,7 @@
 #
 # MIT License
 #
-# Copyright (c) 2024 nbiotcloud
+# Copyright (c) 2024-2025 nbiotcloud
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -110,7 +110,7 @@ select = [
     # implicit string concatenation
     "ISC",
     # type-checking imports
-    "TCH",
+    "TC",
     # comprehensions
     "C",
     "C4",
@@ -161,7 +161,7 @@ ignore = [
     # Assert
     'S101',
     # Type-Checking
-    'TCH001',
+    'TC001',
 ]
 [tool.ruff.lint.per-file-ignores]
 "test_*" = [

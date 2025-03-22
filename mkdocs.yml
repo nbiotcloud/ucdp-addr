@@ -1,9 +1,8 @@
-site_name: UCDP-ADDR
-site_description: Unified Chip Design Platform - Address Map
+site_name: "UCDP-ADDR"
+site_description: "Unified Chip Design Platform - Address Map"
 site_url: https://ucdp-addr.readthedocs.io/en
 repo_url: https://github.com/nbiotcloud/ucdp-addr
-#strict: true
-copyright: Copyright (c) 2024 nbiotcloud
+copyright: Copyright (c) 2024-2025 nbiotcloud
 
 theme:
   name: material
@@ -28,21 +27,31 @@ theme:
 
 nav:
   - Get Started:
-    - Welcome to UCDP-ADDR: index.md
-    - Contributing: contributing.md
+      - Welcome to UCDP-ADDR: index.md
+      - Contributing: contributing.md
   - API:
-    - Overview: api.md
-    - Address Decoder: api/addrdecoder.md
-    - Address Map: api/addrmap.md
-    - Address Map Finder: api/addrmapfinder.md
-    - Master: api/addrmaster.md
-    - Master-Slave Matrix: api/addrmatrix.md
-    - Address Reference: api/addrref.md
-    - Address Slave: api/addrslave.md
-    - Address Space: api/addrspace.md
-    - Address Space Alias: api/addrspacealias.md
-    - Address Spaces: api/addrspaces.md
-
+      - Overview: api.md
+      - Access: api/access.md
+      - Address Decoder: api/addrdecoder.md
+      - Address Information: api/addrinfo.md
+      - Address Map Finder: api/addrmapfinder.md
+      - Address Map: api/addrmap.md
+      - Address Range: api/addrrange.md
+      - Address Reference: api/addrref.md
+      - Address Slave: api/addrslave.md
+      - Address Space Alias: api/addrspacealias.md
+      - Address Space: api/addrspace.md
+      - Address Spaces: api/addrspaces.md
+      - Addrmap Reference: api/addrmapref.md
+      - Constants: api/const.md
+      - Data Information: api/datainfo.md
+      - Data: api/data.md
+      - Defines: api/defines.md
+      - Master-Slave Matrix: api/addrmatrix.md
+      - Master: api/addrmaster.md
+      - Resolver: api/resolver.md
+      - Util: api/util.md
+      - Word Information: api/wordinfo.md
 
 plugins:
   - search
