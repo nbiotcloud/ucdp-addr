@@ -1,6 +1,6 @@
 *.pyc
 .*_cache/
-.coverage
+.coverage*
 .nox/
 .venv*
 .pdm-python

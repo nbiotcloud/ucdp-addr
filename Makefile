@@ -47,7 +47,7 @@ doc-serve: .venv/.valid ## Start Local Documentation Server via 'mkdocs'
 
 .PHONY: code
 code:  ## Start Visual Studio Code
-	code ucdp_addr.code-workspace &
+	code ucdp-addr.code-workspace &
 
 
 .PHONY: clean
