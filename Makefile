@@ -72,3 +72,10 @@ shell:  ## Open a project specific SHELL. For leaving use 'exit'.
 
 uv.lock:
 	uv lock
+
+API_MD_FILES:=$(shell ls src/ucdp_addr/*.py | grep -v __init__ | grep cli | sed "s+src/ucdp_addr+docs/api+" | sed "s+\.py+.md+")
+.PHONY: api-md
+api-md: ${API_MD_FILES}
+
+docs/api/%.md:
+	echo "::: ucdp_addr.$*" > $@

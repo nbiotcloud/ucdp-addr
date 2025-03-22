@@ -31,16 +31,27 @@ nav:
       - Contributing: contributing.md
   - API:
       - Overview: api.md
+      - Access: api/access.md
       - Address Decoder: api/addrdecoder.md
-      - Address Map: api/addrmap.md
+      - Address Information: api/addrinfo.md
       - Address Map Finder: api/addrmapfinder.md
-      - Master: api/addrmaster.md
-      - Master-Slave Matrix: api/addrmatrix.md
+      - Address Map: api/addrmap.md
+      - Address Range: api/addrrange.md
       - Address Reference: api/addrref.md
       - Address Slave: api/addrslave.md
-      - Address Space: api/addrspace.md
       - Address Space Alias: api/addrspacealias.md
+      - Address Space: api/addrspace.md
       - Address Spaces: api/addrspaces.md
+      - Addrmap Reference: api/addrmapref.md
+      - Constants: api/const.md
+      - Data Information: api/datainfo.md
+      - Data: api/data.md
+      - Defines: api/defines.md
+      - Master-Slave Matrix: api/addrmatrix.md
+      - Master: api/addrmaster.md
+      - Resolver: api/resolver.md
+      - Util: api/util.md
+      - Word Information: api/wordinfo.md
 
 plugins:
   - search
