@@ -6,7 +6,6 @@
 
 # Unified Chip Design Platform - Address Map
 
-* [Documentation](https://ucdp-addr.readthedocs.io/en/stable/)
 * [PyPI](https://pypi.org/project/ucdp-addr/)
 * [Sources](https://github.com/nbiotcloud/ucdp-addr)
 * [Issues](https://github.com/nbiotcloud/ucdp-addr/issues)
