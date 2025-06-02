@@ -231,7 +231,10 @@ class Words(u.Object):
     naming: NamingScheme = "dec"
 
     idx: int
+    """Next Word Index."""
     word: Word
+    """Current Word."""
+    words: list[Word]
 
     @classmethod
     def create(
@@ -239,7 +242,9 @@ class Words(u.Object):
     ) -> "Words":
         """Create Helper for Set of Words."""
         idx, word = cls._create_word(name, addrspace, word_kwargs, naming, **kwargs)
-        return cls(name=name, addrspace=addrspace, word_kwargs=word_kwargs, idx=idx, word=word, naming=naming)
+        return cls(
+            name=name, addrspace=addrspace, word_kwargs=word_kwargs, idx=idx, word=word, words=[word], naming=naming
+        )
 
     @staticmethod
     def _create_word(
@@ -260,6 +265,7 @@ class Words(u.Object):
     def next(self):
         """Start a new Word."""
         self.idx, self.word = self._create_word(self.name, self.addrspace, self.word_kwargs, self.naming, idx=self.idx)
+        self.words.append(self.word)
 
     def add_field(self, *args, **kwargs):
         """Add Field to Current Word or start a new one."""
