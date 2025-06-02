@@ -111,8 +111,8 @@ class Word(u.IdentObject):
         self,
         name: str,
         type_: u.BaseScalarType,
-        bus: Access | None = None,
-        core: Access | None = None,
+        bus: Access | str | None = None,
+        core: Access | str | None = None,
         offset: int | u.Expr | None = None,
         align: int | u.Expr | None = None,
         is_volatile: bool | None = None,
@@ -334,8 +334,8 @@ class Addrspace(AddrRange, u.IdentObject):
         byteoffset: int | u.Expr | None = None,
         bytealign: int | u.Expr | None = None,
         depth: int | u.Expr | None = None,
-        bus: Access | None = None,
-        core: Access | None = None,
+        bus: Access | str | None = None,
+        core: Access | str | None = None,
         is_volatile: bool | None = None,
         title: str | None = None,
         descr: str | None = None,
@@ -348,8 +348,12 @@ class Addrspace(AddrRange, u.IdentObject):
         doc = u.Doc(title=title, descr=descr, comment=comment)
         if bus is None:
             bus = self.bus
+        else:
+            bus = cast_access(bus)
         if core is None:
             core = self.core
+        else:
+            core = cast_access(core)
         if is_volatile is None:
             is_volatile = self.is_volatile
         word = self._create_word(
