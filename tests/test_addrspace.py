@@ -118,6 +118,8 @@ def test_add_word(addrspace):
     assert word0.width == 32
     assert word0.depth is None
     assert word0.slice == u.Slice("0")
+    assert word0.bus is None
+    assert word0.core is None
 
     word1 = addrspace.add_word("word1", offset=6)
     assert word1.name == "word1"
@@ -136,12 +138,14 @@ def test_add_word(addrspace):
     with raises(ValueError, match=re.escape("Word 'word3' exceeds address space depth of 32")):
         addrspace.add_word("word3", offset=32)
 
-    word4 = addrspace.add_word("word4", offset=31)
+    word4 = addrspace.add_word("word4", offset=31, bus="RW", core="RO")
     assert word4.name == "word4"
     assert word4.offset == 31
     assert word4.width == 32
     assert word4.depth is None
     assert word4.slice == u.Slice("31")
+    assert word4.bus == RW
+    assert word4.core == RO
 
     with raises(ValueError, match=re.escape("Word 'word5' has illegal depth of zero.")):
         addrspace.add_word("word5", depth=0)
