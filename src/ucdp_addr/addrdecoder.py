@@ -44,6 +44,8 @@ class AddrDecoder(u.Object):
 
     An address decoder manages the access to a known list of slaves.
     The address map contains the address to slave mapping.
+
+    An address decoder contains a unique address map and a namespace with all slaves.
     """
 
     addrmap: AddrMap = u.Field(default_factory=lambda: AddrMap(unique=True))

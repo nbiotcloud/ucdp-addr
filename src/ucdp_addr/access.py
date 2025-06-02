@@ -234,14 +234,16 @@ def any_read(accesses: Sequence[Access]) -> bool:
     """
     Return `True` if there is any read.
 
-    >>> any_read([NA])
-    False
-    >>> any_read([RO, RO])
-    True
-    >>> any_read([RW, RW])
-    True
-    >>> any_read([RO, RW, WO])
-    True
+    Usage:
+
+        >>> any_read([NA])
+        False
+        >>> any_read([RO, RO])
+        True
+        >>> any_read([RW, RW])
+        True
+        >>> any_read([RO, RW, WO])
+        True
     """
     return any(access.read for access in accesses)
 
@@ -250,18 +252,20 @@ def is_read_repeatable(accesses: Sequence[Access]) -> bool:
     """
     Return `True` if a read has no side-effects.
 
-    >>> is_read_repeatable([NA])
-    True
-    >>> is_read_repeatable([RO, RO])
-    True
-    >>> is_read_repeatable([RW, RW])
-    True
-    >>> is_read_repeatable([RO, RW, WO])
-    True
-    >>> is_read_repeatable([RO, RW, RC])
-    False
-    >>> is_read_repeatable([RO, RW, RP])
-    False
+    Usage:
+
+        >>> is_read_repeatable([NA])
+        True
+        >>> is_read_repeatable([RO, RO])
+        True
+        >>> is_read_repeatable([RW, RW])
+        True
+        >>> is_read_repeatable([RO, RW, WO])
+        True
+        >>> is_read_repeatable([RO, RW, RC])
+        False
+        >>> is_read_repeatable([RO, RW, RP])
+        False
     """
     return all(not acc.read or not (acc.read.data is not None or acc.read.once) for acc in accesses)
 
@@ -270,15 +274,15 @@ def is_write_repeatable(accesses: Sequence[Access]) -> bool:
     """
     Return `True` if a write has no side-effects.
 
-    >>> is_write_repeatable([NA])
-    True
-    >>> is_write_repeatable([RO, RO])
-    True
-    >>> is_write_repeatable([RW, RW])
-    True
-    >>> is_write_repeatable([RO, RW, WO])
-    True
-    >>> is_write_repeatable([RO, RW, WL])
-    False
+        >>> is_write_repeatable([NA])
+        True
+        >>> is_write_repeatable([RO, RO])
+        True
+        >>> is_write_repeatable([RW, RW])
+        True
+        >>> is_write_repeatable([RO, RW, WO])
+        True
+        >>> is_write_repeatable([RO, RW, WL])
+        False
     """
     return all(not acc.write or not acc.write.once for acc in accesses)

@@ -24,9 +24,9 @@
 """
 Address Information.
 
-Access can be done to addrspacesa, words and fields,
+Access can be done to addrspaces, words, fields
 and addresses in a single, burst or scatter flavour using offsets, masks, etc.
-:any:`create` takes all these variants into account and serves a normalized information set `AddrInfo`.
+`create` takes all these variants into account and serves a normalized information set as `AddrInfo`.
 """
 
 from collections.abc import Iterator
@@ -70,7 +70,8 @@ class AddrInfo(u.Object):
             offset: address offset in bytes
             mask: Value Mask (not allowed for fields)
 
-        Example:
+        Example Address Map:
+
             >>> import ucdp as u
             >>> from ucdp_addr import Addrspace, Word, Field, AddrMap
             >>> addrmap = AddrMap()
