@@ -196,6 +196,33 @@ class Word(u.IdentObject):
         """Get Field."""
         return self.fields[name]
 
+    def get_default(self, filter_=None) -> u.Hex:
+        """
+        Return Word default value for all fields of one word.
+
+        >>> import ucdp_addr as ua
+        >>> word = ua.Word(name='word', offset=0, width=32)
+        >>> field = word.add_field('field0', u.UintType(3, default=3), ua.access.RO)
+        >>> field = word.add_field('field1', u.SintType(6, default=-8), ua.access.WO, align=4)
+        >>> field = word.add_field('field2', u.UintType(3, default=4), ua.access.RW, align=4)
+
+        >>> word.get_default()
+        Hex('0x00004383')
+        >>> word.get_default(filter_=lambda field: field.bus.read)
+        Hex('0x00004003')
+        >>> word.get_default(filter_=lambda field: field.bus.write)
+        Hex('0x00004380')
+        >>> word.get_default(filter_=lambda field: field.bus.read and field.bus.write)
+        Hex('0x00004000')
+        """
+        fields = self.fields
+        if filter_:
+            fields = [field for field in fields if filter_(field)]
+        default = sum(
+            [field.slice.update(0, field.type_.default, is_signed=u.is_signed(field.type_)) for field in fields]
+        )
+        return u.Hex(default, width=self.width)
+
     def get_mask(self, filter_=None) -> u.Hex:
         """
         Return mask for all fields of one word.
@@ -206,13 +233,13 @@ class Word(u.IdentObject):
         >>> field = word.add_field('field1', u.UintType(6), ua.access.WO, align=4)
         >>> field = word.add_field('field2', u.UintType(3), ua.access.RW, align=4)
 
-        >>> get_mask(word)
+        >>> word.get_mask()
         Hex('0x000073F7')
-        >>> get_mask(word, filter_=lambda field: field.bus.read)
+        >>> word.get_mask(filter_=lambda field: field.bus.read)
         Hex('0x00007007')
-        >>> get_mask(word, filter_=lambda field: field.bus.write)
+        >>> word.get_mask(filter_=lambda field: field.bus.write)
         Hex('0x000073F0')
-        >>> get_mask(word, filter_=lambda field: field.bus.read and field.bus.write)
+        >>> word.get_mask(filter_=lambda field: field.bus.read and field.bus.write)
         Hex('0x00007000')
         """
         return get_mask(self, filter_=filter_)
