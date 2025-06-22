@@ -405,6 +405,10 @@ class Addrspace(AddrRange, u.IdentObject):
             naming=naming or self.add_words_naming,
         )
 
+    def get_word(self, name: str) -> Word:
+        """Retrieve Word."""
+        return self.words[name]
+
     def _create_word(self, **kwargs) -> Word:
         return Word(**kwargs)
 

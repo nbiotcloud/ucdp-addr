@@ -157,6 +157,8 @@ def test_add_word(addrspace):
 
     assert tuple(addrspace.iter()) == ()
 
+    assert addrspace.get_word("word2") is word2
+
 
 def test_addrspace():
     """Address Space."""
