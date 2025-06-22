@@ -109,6 +109,10 @@ def test_add_field(addrspace, word):
     assert addrspace.get_field_hiername(word, field0) == "name.word.field0"
     assert addrspace.get_field_hiername(word, field1) == "name.word.field1"
 
+    assert word.get_mask() == u.Hex("0xF3FFFFFF")
+    assert word.get_mask(filter_=lambda field: field.bus) == u.Hex("0xF3FFFFFF")
+    assert word.get_mask(filter_=lambda field: field.core) == u.Hex("0x03F00000")
+
 
 def test_add_word(addrspace):
     """Add Word."""

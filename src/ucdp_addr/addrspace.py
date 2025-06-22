@@ -192,6 +192,27 @@ class Word(u.IdentObject):
             return f"{bus}/{core}"
         return ""
 
+    def get_mask(self, filter_=None) -> u.Hex:
+        """
+        Return mask for all fields of one word.
+
+        >>> import ucdp_addr as ua
+        >>> word = ua.Word(name='word', offset=0, width=32)
+        >>> field = word.add_field('field0', u.UintType(3), ua.access.RO)
+        >>> field = word.add_field('field1', u.UintType(6), ua.access.WO, align=4)
+        >>> field = word.add_field('field2', u.UintType(3), ua.access.RW, align=4)
+
+        >>> get_mask(word)
+        Hex('0x000073F7')
+        >>> get_mask(word, filter_=lambda field: field.bus.read)
+        Hex('0x00007007')
+        >>> get_mask(word, filter_=lambda field: field.bus.write)
+        Hex('0x000073F0')
+        >>> get_mask(word, filter_=lambda field: field.bus.read and field.bus.write)
+        Hex('0x00007000')
+        """
+        return get_mask(self, filter_=filter_)
+
 
 def _bytealign(width, free, offset=None, align=None, byteoffset=None, bytealign=None):
     if byteoffset is None and bytealign is None:
