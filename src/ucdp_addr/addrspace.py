@@ -192,6 +192,10 @@ class Word(u.IdentObject):
             return f"{bus}/{core}"
         return ""
 
+    def get_field(self, name: str) -> Field:
+        """Get Field."""
+        return self.fields[name]
+
     def get_mask(self, filter_=None) -> u.Hex:
         """
         Return mask for all fields of one word.

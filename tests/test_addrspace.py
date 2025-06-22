@@ -106,6 +106,8 @@ def test_add_field(addrspace, word):
 
     assert tuple(word.fields) == (field0, field1, field2, field4)
 
+    assert word.get_field("field2") is field2
+
     assert addrspace.get_field_hiername(word, field0) == "name.word.field0"
     assert addrspace.get_field_hiername(word, field1) == "name.word.field1"
 
