@@ -27,6 +27,7 @@ Address Space.
 
 from collections import defaultdict
 from collections.abc import Callable, Iterator
+from itertools import chain
 from string import ascii_lowercase
 from typing import Any, Literal, Optional, TypeAlias
 
@@ -313,21 +314,26 @@ class Words(u.Object):
         word = addrspace.add_word(f"{name}{suffix}", **word_kwargs, **kwargs)
         return idx + 1, word
 
-    def _add_field(self, *args, **kwargs):
-        self.word.add_field(*args, **kwargs)
+    def _add_field(self, *args, **kwargs) -> Field:
+        return self.word.add_field(*args, **kwargs)
 
     def next(self):
         """Start a new Word."""
         self.idx, self.word = self._create_word(self.name, self.addrspace, self.word_kwargs, self.naming, idx=self.idx)
         self.words.append(self.word)
 
-    def add_field(self, *args, **kwargs):
+    def add_field(self, *args, **kwargs) -> Field:
         """Add Field to Current Word or start a new one."""
         try:
-            self._add_field(*args, **kwargs)
+            return self._add_field(*args, **kwargs)
         except FullError:
             self.next()
-            self._add_field(*args, **kwargs)
+            return self._add_field(*args, **kwargs)
+
+    @property
+    def fields(self) -> tuple[Field, ...]:
+        """Fields Of All Words."""
+        return tuple(chain.from_iterable(word.fields for word in self.words))
 
 
 class Addrspace(AddrRange, u.IdentObject):
