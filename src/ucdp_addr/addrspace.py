@@ -68,6 +68,26 @@ class Field(u.IdentLightObject):
     """Attributes."""
 
     @property
+    def title(self) -> str | None:
+        """Alias to `doc.title`."""
+        return self.doc.title
+
+    @property
+    def descr(self) -> str | None:
+        """Alias to `doc.descr`."""
+        return self.doc.descr
+
+    @property
+    def comment(self) -> str | None:
+        """Alias to `doc.comment`."""
+        return self.doc.comment
+
+    @property
+    def comment_or_title(self) -> str | None:
+        """Return `comment` if set, otherwise `title`."""
+        return self.doc.comment_or_title
+
+    @property
     def slice(self) -> u.Slice:
         """Slice with Word."""
         return u.Slice(width=self.type_.width, right=self.offset)
@@ -107,6 +127,26 @@ class Word(u.IdentObject):
     bus: Access | None = None
     core: Access | None = None
     is_volatile: bool | None = None
+
+    @property
+    def title(self) -> str | None:
+        """Alias to `doc.title`."""
+        return self.doc.title
+
+    @property
+    def descr(self) -> str | None:
+        """Alias to `doc.descr`."""
+        return self.doc.descr
+
+    @property
+    def comment(self) -> str | None:
+        """Alias to `doc.comment`."""
+        return self.doc.comment
+
+    @property
+    def comment_or_title(self) -> str | None:
+        """Return `comment` if set, otherwise `title`."""
+        return self.doc.comment_or_title
 
     def add_field(
         self,
@@ -345,6 +385,8 @@ class Addrspace(AddrRange, u.IdentObject):
     """Address Decoder Just Compares `addrwidth` LSBs."""
     words: u.Namespace = u.Field(default_factory=u.Namespace, repr=False)
     """Words within Address Space."""
+    doc: u.Doc = u.Doc()
+    """Documentation"""
     attrs: CastableAttrs = ()
     """Attributes."""
 
@@ -354,6 +396,26 @@ class Addrspace(AddrRange, u.IdentObject):
     bus: ToAccess | None = None
     core: ToAccess | None = None
     is_volatile: bool | None = None
+
+    @property
+    def title(self) -> str | None:
+        """Alias to `doc.title`."""
+        return self.doc.title
+
+    @property
+    def descr(self) -> str | None:
+        """Alias to `doc.descr`."""
+        return self.doc.descr
+
+    @property
+    def comment(self) -> str | None:
+        """Alias to `doc.comment`."""
+        return self.doc.comment
+
+    @property
+    def comment_or_title(self) -> str | None:
+        """Return `comment` if set, otherwise `title`."""
+        return self.doc.comment_or_title
 
     @property
     def size_used(self) -> u.Bytes:

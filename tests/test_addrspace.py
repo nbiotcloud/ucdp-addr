@@ -67,9 +67,9 @@ def test_accesses(tmp_path, capsys):
     assert_refdata(test_accesses, tmp_path, capsys=capsys)
 
 
-def test_add_field(addrspace, word):
+def test_add_field(addrspace, word):  # noqa: PLR0915
     """Add Field."""
-    field0 = word.add_field("field0", u.UintType(20), "RW")
+    field0 = word.add_field("field0", u.UintType(20), "RW", comment="my comment")
     assert field0.name == "field0"
     assert field0.type_ == u.UintType(20)
     assert field0.bus == RW
@@ -77,8 +77,13 @@ def test_add_field(addrspace, word):
     assert field0.offset == 0
     assert field0.slice == u.Slice("19:0")
     assert field0.access == "RW/-"
+    assert field0.doc == u.Doc(comment="my comment")
+    assert field0.title is None
+    assert field0.descr is None
+    assert field0.comment == "my comment"
+    assert field0.comment_or_title == "my comment"
 
-    field1 = word.add_field("field1", u.SintType(6), "RO", core="RO")
+    field1 = word.add_field("field1", u.SintType(6), "RO", core="RO", title="my title", descr="my descr")
     assert field1.name == "field1"
     assert field1.type_ == u.SintType(6)
     assert field1.bus == RO
@@ -86,6 +91,11 @@ def test_add_field(addrspace, word):
     assert field1.offset == 20
     assert field1.slice == u.Slice("25:20")
     assert field1.access == "RO/RO"
+    assert field1.doc == u.Doc(title="my title", descr="my descr")
+    assert field1.title == "my title"
+    assert field1.descr == "my descr"
+    assert field1.comment is None
+    assert field1.comment_or_title == "my title"
 
     assert tuple(word.fields) == (field0, field1)
 
@@ -97,6 +107,11 @@ def test_add_field(addrspace, word):
     assert field2.offset == 28
     assert field2.slice == u.Slice("29:28")
     assert field2.access == "RO/-"
+    assert field2.doc == u.Doc()
+    assert field2.title is None
+    assert field2.descr is None
+    assert field2.comment is None
+    assert field2.comment_or_title is None
 
     with raises(ValueError, match=re.escape("Field 'field3' exceeds word width of 32")):
         word.add_field("field3", u.UintType(3), "RO", offset=30)
@@ -116,9 +131,9 @@ def test_add_field(addrspace, word):
     assert word.get_mask(filter_=lambda field: field.core) == u.Hex("0x03F00000")
 
 
-def test_add_word(addrspace):
+def test_add_word(addrspace):  # noqa: PLR0915
     """Add Word."""
-    word0 = addrspace.add_word("word0")
+    word0 = addrspace.add_word("word0", comment="my comment")
     assert word0.name == "word0"
     assert word0.offset == 0
     assert word0.width == 32
@@ -126,13 +141,23 @@ def test_add_word(addrspace):
     assert word0.slice == u.Slice("0")
     assert word0.bus is None
     assert word0.core is None
+    assert word0.doc == u.Doc(comment="my comment")
+    assert word0.title is None
+    assert word0.descr is None
+    assert word0.comment == "my comment"
+    assert word0.comment_or_title == "my comment"
 
-    word1 = addrspace.add_word("word1", offset=6)
+    word1 = addrspace.add_word("word1", offset=6, title="my title", descr="my descr")
     assert word1.name == "word1"
     assert word1.offset == 6
     assert word1.width == 32
     assert word1.depth is None
     assert word1.slice == u.Slice("6")
+    assert word1.doc == u.Doc(title="my title", descr="my descr")
+    assert word1.title == "my title"
+    assert word1.descr == "my descr"
+    assert word1.comment is None
+    assert word1.comment_or_title == "my title"
 
     word2 = addrspace.add_word("word2", align=4, depth=2)
     assert word2.name == "word2"
@@ -140,6 +165,11 @@ def test_add_word(addrspace):
     assert word2.width == 32
     assert word2.depth == 2
     assert word2.slice == u.Slice("9:8")
+    assert word2.doc == u.Doc()
+    assert word2.title is None
+    assert word2.descr is None
+    assert word2.comment is None
+    assert word2.comment_or_title is None
 
     with raises(ValueError, match=re.escape("Word 'word3' exceeds address space depth of 32")):
         addrspace.add_word("word3", offset=32)
@@ -180,11 +210,18 @@ def test_addrspace():
     assert addrspace.nextaddr == u.Hex("0x1000")
     assert addrspace.size_used == u.Bytesize("0 KB")
     assert addrspace.wordsize == 4
+    assert addrspace.doc == u.Doc()
+    assert addrspace.title is None
+    assert addrspace.descr is None
+    assert addrspace.comment is None
+    assert addrspace.comment_or_title is None
 
 
 def test_addrspace_custom():
     """Address Space."""
-    addrspace = Addrspace(name="name", width=64, depth=128, baseaddr=0x10000)
+    addrspace = Addrspace(
+        name="name", width=64, depth=128, baseaddr=0x10000, doc=u.Doc(title="my title", descr="my descr")
+    )
     assert addrspace.name == "name"
     assert addrspace.words == u.Namespace()
     assert addrspace.width == 64
@@ -195,6 +232,11 @@ def test_addrspace_custom():
     assert addrspace.endaddr == u.Hex("0x103FF")
     assert addrspace.nextaddr == u.Hex("0x10400")
     assert addrspace.size_used == u.Bytesize("0 KB")
+    assert addrspace.doc == u.Doc(title="my title", descr="my descr")
+    assert addrspace.title == "my title"
+    assert addrspace.descr == "my descr"
+    assert addrspace.comment is None
+    assert addrspace.comment_or_title == "my title"
 
 
 def test_addrspace_size():
