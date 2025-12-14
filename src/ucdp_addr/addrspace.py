@@ -39,7 +39,7 @@ from ucdp_glbl.attrs import CastableAttrs, cast_attrs
 from .access import Access, ToAccess, cast_access
 from .addrrange import AddrRange
 
-NamingScheme: TypeAlias = Literal["dec", "alpha"] | Callable[[int], str]
+NamingScheme: TypeAlias = Literal["dec", "dec1", "alpha"] | Callable[[int], str]
 
 _ALPHA_PER_DIGIT = len(ascii_lowercase)
 
@@ -304,6 +304,8 @@ class Words(u.Object):
     ) -> tuple[int, Word]:
         if naming == "dec":
             suffix = str(idx)
+        elif naming == "dec1":
+            suffix = str(idx + 1)
         elif naming == "alpha":
             suffix = name_alpha(idx)
         else:
