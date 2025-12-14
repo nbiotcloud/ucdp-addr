@@ -581,12 +581,12 @@ def test_add_words(tmp_path):
     assert tuple(w.name for w in word.words) == ("a0", "a1")
     assert word.fields == (a_a, a_b, a_c, a_d)
 
-    word = addrspace.add_words("b", align=16)
+    word = addrspace.add_words("b", align=16, naming="dec1")
     b_a = word.add_field("a", u.UintType(14), "RW")
     b_b = word.add_field("b", u.UintType(18), "RW")
     b_c = word.add_field("c", u.UintType(10), "RW")
     b_d = word.add_field("d", u.UintType(23), "RW")
-    assert tuple(w.name for w in word.words) == ("b0", "b1", "b2")
+    assert tuple(w.name for w in word.words) == ("b1", "b2", "b3")
     assert word.fields == (b_a, b_b, b_c, b_d)
 
     _dump_addrspace(addrspace.iter(fill=True), tmp_path)
